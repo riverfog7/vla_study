@@ -52,6 +52,21 @@ class DeltaPoseAction(UnityRequestModel):
     blocking: bool = False
 
 
+class StandardizedDeltaAction(UnityRequestModel):
+    delta_position: Vector3
+    gripper: float | None = Field(default=None, ge=0.0, le=1.0)
+    blocking: bool = False
+    raw_rotation_delta: Vector3 | None = None
+    rotation_mode: str = Field(default="ignored", min_length=1)
+    source: str | None = None
+    raw_action: list[float] = Field(default_factory=list)
+    prompt: str | None = None
+    unnorm_key_used: str | None = None
+    model_id: str | None = None
+    inference_ms: float | None = Field(default=None, ge=0.0)
+    request_id: str | None = None
+
+
 class PoseCommand(UnityRequestModel):
     frame: str = Field(default="world", min_length=1)
     position: Vector3

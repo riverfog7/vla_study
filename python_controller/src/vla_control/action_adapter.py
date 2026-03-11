@@ -4,7 +4,15 @@ from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings
 
 from vla_control.config import build_settings_config
-from vla_control.models import AbsolutePoseAction, DeltaPoseAction, PoseCommand, Quaternion, StateResponse, Vector3
+from vla_control.models import (
+    AbsolutePoseAction,
+    DeltaPoseAction,
+    PoseCommand,
+    Quaternion,
+    StandardizedDeltaAction,
+    StateResponse,
+    Vector3,
+)
 
 
 class WorkspaceBounds(BaseModel):
@@ -24,7 +32,9 @@ class ActionAdapter:
     def __init__(self, config: ActionAdapterConfig | None = None) -> None:
         self.config = config or ActionAdapterConfig()
 
-    def raw_to_pose_command(self, raw_action: BaseModel | dict, state: StateResponse) -> PoseCommand:
+    def raw_to_pose_command(
+        self, raw_action: BaseModel | dict, state: StateResponse
+    ) -> PoseCommand:
         resolved_action = self._coerce_action(raw_action)
 
         if isinstance(resolved_action, PoseCommand):
@@ -39,6 +49,23 @@ class ActionAdapter:
                 blocking=resolved_action.blocking,
             )
 
+        if isinstance(resolved_action, StandardizedDeltaAction):
+            current_position = state.current_pose.position
+            target_position = Vector3(
+                x=current_position.x + resolved_action.delta_position.x,
+                y=current_position.y + resolved_action.delta_position.y,
+                z=current_position.z + resolved_action.delta_position.z,
+            )
+            return PoseCommand(
+                frame=self.config.frame,
+                position=self._clamp_position(target_position),
+                rotation=state.current_pose.rotation,
+                gripper=state.gripper
+                if resolved_action.gripper is None
+                else resolved_action.gripper,
+                blocking=resolved_action.blocking,
+            )
+
         if isinstance(resolved_action, DeltaPoseAction):
             current_position = state.current_pose.position
             target_position = Vector3(
@@ -50,18 +77,37 @@ class ActionAdapter:
                 frame=self.config.frame,
                 position=self._clamp_position(target_position),
                 rotation=resolved_action.target_rotation or state.current_pose.rotation,
-                gripper=state.gripper if resolved_action.gripper is None else resolved_action.gripper,
+                gripper=state.gripper
+                if resolved_action.gripper is None
+                else resolved_action.gripper,
                 blocking=resolved_action.blocking,
             )
 
         raise TypeError(f"Unsupported raw action type: {type(raw_action)!r}")
 
-    def _coerce_action(self, raw_action: BaseModel | dict) -> PoseCommand | AbsolutePoseAction | DeltaPoseAction:
-        if isinstance(raw_action, (PoseCommand, AbsolutePoseAction, DeltaPoseAction)):
+    def _coerce_action(
+        self, raw_action: BaseModel | dict
+    ) -> PoseCommand | AbsolutePoseAction | StandardizedDeltaAction | DeltaPoseAction:
+        if isinstance(
+            raw_action,
+            (PoseCommand, AbsolutePoseAction, StandardizedDeltaAction, DeltaPoseAction),
+        ):
             return raw_action
 
         if isinstance(raw_action, dict):
             if "delta_position" in raw_action:
+                if any(
+                    key in raw_action
+                    for key in (
+                        "raw_rotation_delta",
+                        "rotation_mode",
+                        "raw_action",
+                        "unnorm_key_used",
+                        "model_id",
+                        "inference_ms",
+                    )
+                ):
+                    return StandardizedDeltaAction.model_validate(raw_action)
                 return DeltaPoseAction.model_validate(raw_action)
             if "position" in raw_action:
                 if "frame" in raw_action or "blocking" in raw_action:
