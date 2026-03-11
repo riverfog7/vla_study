@@ -1,11 +1,35 @@
-from vla_control.action_adapter import ActionAdapter, ActionAdapterConfig, WorkspaceBounds
-from vla_control.backends import DummyPolicy, DummyPolicyConfig, DummyRawAction, PolicyBackend, PolicyInput
+from vla_control.action_adapter import (
+    ActionAdapter,
+    ActionAdapterConfig,
+    WorkspaceBounds,
+)
+from vla_control.backends import (
+    DummyPolicy,
+    DummyPolicyConfig,
+    DummyRawAction,
+    PolicyBackend,
+    PolicyInput,
+)
 from vla_control.config import UnityConfig
-from vla_control.evaluation_runner import EvaluationRunner, RolloutConfig, RolloutStepRecord, RolloutSummary, StepTiming
-from vla_control.errors import UnityApiError, UnityClientError, UnityProtocolError, UnityTransportError
+from vla_control.evaluation_runner import (
+    EvaluationRunner,
+    RolloutConfig,
+    RolloutStepRecord,
+    RolloutSummary,
+    StepTiming,
+)
+from vla_control.errors import (
+    UnityApiError,
+    UnityClientError,
+    UnityProtocolError,
+    UnityTransportError,
+)
 from vla_control.models import (
     AbsolutePoseAction,
+    CameraInfo,
+    CameraListResponse,
     CameraRequest,
+    DeleteCameraResponse,
     DeltaPoseAction,
     HealthResponse,
     MoveToPoseResponse,
@@ -16,6 +40,8 @@ from vla_control.models import (
     StateResponse,
     StepRequest,
     StepResponse,
+    UpsertCameraRequest,
+    UpsertCameraResponse,
     Vector3,
 )
 from vla_control.logging_utils import RolloutArtifactWriter
@@ -26,7 +52,10 @@ __all__ = [
     "AbsolutePoseAction",
     "ActionAdapter",
     "ActionAdapterConfig",
+    "CameraInfo",
+    "CameraListResponse",
     "CameraRequest",
+    "DeleteCameraResponse",
     "DeltaPoseAction",
     "DummyPolicy",
     "DummyPolicyConfig",
@@ -49,6 +78,8 @@ __all__ = [
     "StepTiming",
     "StepRequest",
     "StepResponse",
+    "UpsertCameraRequest",
+    "UpsertCameraResponse",
     "UnityApiError",
     "UnityClient",
     "UnityClientError",

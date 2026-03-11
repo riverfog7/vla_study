@@ -252,6 +252,8 @@ GameObject:
   - component: {fileID: 547963045}
   - component: {fileID: 547963044}
   - component: {fileID: 547963043}
+  - component: {fileID: 547963055}
+  - component: {fileID: 547963054}
   m_Layer: 0
   m_Name: VlaHarnessScene
   m_TagString: Untagged
@@ -274,7 +276,14 @@ MonoBehaviour:
   workspaceTable: {fileID: 1346882154}
   targetObject: {fileID: 64702997}
   proxyEndEffector: {fileID: 1582763456}
-  mainCamera: {fileID: 963194227}
+  proxyCameraMount: {fileID: 1646310724}
+  cameras:
+  - cameraName: main
+    camera: {fileID: 963194227}
+    enabled: 1
+    mountTarget: 
+    localPositionOffset: {x: 0, y: 0, z: 0}
+    localRotationEuler: {x: 0, y: 0, z: 0}
 --- !u!4 &547963042
 Transform:
   m_ObjectHideFlags: 0
@@ -327,6 +336,8 @@ MonoBehaviour:
   simulationController: {fileID: 547963051}
   cameraRegistry: {fileID: 547963050}
   cameraCaptureService: {fileID: 547963049}
+  cameraMountService: {fileID: 0}
+  runtimeCameraService: {fileID: 0}
   proxyPoseAdapter: {fileID: 547963048}
   sceneStateService: {fileID: 547963047}
   taskResetService: {fileID: 547963046}
@@ -456,6 +467,30 @@ MonoBehaviour:
   physicsDt: 0.02
   policyPeriodSeconds: 0.2
   defaultManualStepCount: 1
+--- !u!114 &547963054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 547963040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff0d394dd439fdf4c88406ed21de281f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VlaStudy.UnityHarness.Camera.RuntimeCameraService
+--- !u!114 &547963055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 547963040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 915d20330788ff0468ea510ca0b72a4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VlaStudy.UnityHarness.Camera.CameraMountService
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -866,8 +901,40 @@ Transform:
   m_LocalPosition: {x: 0, y: 0.85, z: 0}
   m_LocalScale: {x: 0.12, y: 0.12, z: 0.12}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1646310724}
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1646310723
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1646310724}
+  m_Layer: 0
+  m_Name: ProxyCameraMount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1646310724
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1646310723}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1582763456}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

@@ -19,6 +19,7 @@ namespace VlaStudy.UnityHarness.EditorTools
         private const string WorkspaceName = "WorkspaceTable";
         private const string TargetName = "TargetObject";
         private const string ProxyName = "ProxyEndEffector";
+        private const string ProxyCameraMountName = "ProxyCameraMount";
         private const string CameraName = "Main Camera";
         private const string LightName = "Directional Light";
 
@@ -28,6 +29,7 @@ namespace VlaStudy.UnityHarness.EditorTools
         {
             EditorApplication.delayCall += TryAutoRefreshMainScene;
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+            EditorSceneManager.sceneOpened += OnSceneOpened;
         }
 
         [MenuItem("Tools/VLA/Refresh Main Scene")]
@@ -36,9 +38,31 @@ namespace VlaStudy.UnityHarness.EditorTools
             RefreshMainScene(forceWhenDirty: true);
         }
 
+        public static void RefreshMainSceneAssetForBatch()
+        {
+            var activeScene = SceneManager.GetActiveScene();
+            if (!activeScene.IsValid() || activeScene.path != ScenePath)
+            {
+                EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            }
+
+            RefreshMainScene(forceWhenDirty: true);
+        }
+
         private static void OnPlayModeStateChanged(PlayModeStateChange stateChange)
         {
             if (stateChange != PlayModeStateChange.EnteredEditMode)
+            {
+                return;
+            }
+
+            _autoRefreshPending = true;
+            EditorApplication.delayCall += TryAutoRefreshMainScene;
+        }
+
+        private static void OnSceneOpened(Scene scene, OpenSceneMode mode)
+        {
+            if (scene.path != ScenePath)
             {
                 return;
             }
@@ -92,6 +116,8 @@ namespace VlaStudy.UnityHarness.EditorTools
             GetOrAddComponent<SimulationController>(root, ref changed);
             GetOrAddComponent<CameraRegistry>(root, ref changed);
             GetOrAddComponent<CameraCaptureService>(root, ref changed);
+            GetOrAddComponent<CameraMountService>(root, ref changed);
+            GetOrAddComponent<RuntimeCameraService>(root, ref changed);
             GetOrAddComponent<ProxyPoseAdapter>(root, ref changed);
             GetOrAddComponent<SceneStateService>(root, ref changed);
             GetOrAddComponent<TaskResetService>(root, ref changed);
@@ -126,11 +152,12 @@ namespace VlaStudy.UnityHarness.EditorTools
                 new Vector3(0.12f, 0.12f, 0.12f),
                 proxyMaterial,
                 ref changed);
+            var proxyCameraMount = EnsureChildGameObject(proxy.transform, ProxyCameraMountName, Vector3.zero, Quaternion.identity, Vector3.one, ref changed);
 
             var mainCamera = EnsureMainCamera(workspace.transform, ref changed);
             EnsureDirectionalLight(ref changed);
 
-            if (ApplySceneReferences(sceneReferences, workspace.transform, target.transform, proxy.transform, mainCamera))
+            if (ApplySceneReferences(sceneReferences, workspace.transform, target.transform, proxy.transform, proxyCameraMount.transform, mainCamera))
             {
                 changed = true;
                 EditorUtility.SetDirty(sceneReferences);
@@ -146,23 +173,31 @@ namespace VlaStudy.UnityHarness.EditorTools
             EditorSceneManager.SaveScene(activeScene);
         }
 
-        private static bool ApplySceneReferences(HarnessSceneReferences sceneReferences, Transform workspace, Transform target, Transform proxy, UnityEngine.Camera mainCamera)
+        private static bool ApplySceneReferences(
+            HarnessSceneReferences sceneReferences,
+            Transform workspace,
+            Transform target,
+            Transform proxy,
+            Transform proxyCameraMount,
+            UnityEngine.Camera mainCamera)
         {
             if (sceneReferences == null)
             {
                 return false;
             }
 
-            if (sceneReferences.WorkspaceTable == workspace &&
-                sceneReferences.TargetObject == target &&
-                sceneReferences.ProxyEndEffector == proxy &&
-                sceneReferences.MainCamera == mainCamera)
+            var changed = false;
+            if (sceneReferences.WorkspaceTable != workspace ||
+                sceneReferences.TargetObject != target ||
+                sceneReferences.ProxyEndEffector != proxy ||
+                sceneReferences.ProxyCameraMount != proxyCameraMount)
             {
-                return false;
+                sceneReferences.ConfigureBaseReferences(workspace, target, proxy, proxyCameraMount);
+                changed = true;
             }
 
-            sceneReferences.Configure(workspace, target, proxy, mainCamera);
-            return true;
+            changed |= sceneReferences.EnsureCameraDefinition("main", mainCamera, enabled: true);
+            return changed;
         }
 
         private static GameObject GetOrCreateGameObject(string name, ref bool changed)
@@ -189,6 +224,25 @@ namespace VlaStudy.UnityHarness.EditorTools
             return gameObject.AddComponent<T>();
         }
 
+        private static GameObject EnsureChildGameObject(Transform parent, string name, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, ref bool changed)
+        {
+            var child = parent.Find(name);
+            if (child == null)
+            {
+                var childObject = new GameObject(name);
+                childObject.transform.SetParent(parent, false);
+                child = childObject.transform;
+                changed = true;
+            }
+
+            if (ApplyTransform(child, localPosition, localRotation, localScale))
+            {
+                changed = true;
+            }
+
+            return child.gameObject;
+        }
+
         private static bool SceneRootNeedsComponents(GameObject root)
         {
             if (root == null)
@@ -201,6 +255,8 @@ namespace VlaStudy.UnityHarness.EditorTools
                    root.GetComponent<SimulationController>() == null ||
                    root.GetComponent<CameraRegistry>() == null ||
                    root.GetComponent<CameraCaptureService>() == null ||
+                   root.GetComponent<CameraMountService>() == null ||
+                   root.GetComponent<RuntimeCameraService>() == null ||
                    root.GetComponent<ProxyPoseAdapter>() == null ||
                    root.GetComponent<SceneStateService>() == null ||
                    root.GetComponent<TaskResetService>() == null ||

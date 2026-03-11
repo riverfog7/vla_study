@@ -28,6 +28,8 @@ namespace VlaStudy.UnityHarness.Api
         private SimulationController _simulationController;
         private SceneStateService _sceneStateService;
         private CameraCaptureService _cameraCaptureService;
+        private CameraRegistry _cameraRegistry;
+        private RuntimeCameraService _runtimeCameraService;
         private IRobotAdapter _robotAdapter;
         private TaskResetService _taskResetService;
 
@@ -36,6 +38,8 @@ namespace VlaStudy.UnityHarness.Api
             SimulationController simulationController,
             SceneStateService sceneStateService,
             CameraCaptureService cameraCaptureService,
+            CameraRegistry cameraRegistry,
+            RuntimeCameraService runtimeCameraService,
             IRobotAdapter robotAdapter,
             TaskResetService taskResetService)
         {
@@ -43,6 +47,8 @@ namespace VlaStudy.UnityHarness.Api
             _simulationController = simulationController;
             _sceneStateService = sceneStateService;
             _cameraCaptureService = cameraCaptureService;
+            _cameraRegistry = cameraRegistry;
+            _runtimeCameraService = runtimeCameraService;
             _robotAdapter = robotAdapter;
             _taskResetService = taskResetService;
         }
@@ -164,6 +170,13 @@ namespace VlaStudy.UnityHarness.Api
                         return;
                     }
 
+                    case "GET" when path == "/v1/cameras":
+                    {
+                        var response = await _mainThreadDispatcher.EnqueueAsync(() => _cameraRegistry.BuildCameraListResponse());
+                        await WriteJsonAsync(context.Response, HttpStatusCode.OK, response);
+                        return;
+                    }
+
                     case "POST" when path == "/v1/sim/step":
                     {
                         var stepRequest = await ReadJsonBodyAsync<StepRequest>(request);
@@ -201,10 +214,26 @@ namespace VlaStudy.UnityHarness.Api
                         return;
                     }
 
+                    case "POST" when path == "/v1/cameras/upsert":
+                    {
+                        var upsertRequest = await ReadJsonBodyAsync<UpsertCameraRequest>(request);
+                        var response = await _mainThreadDispatcher.EnqueueAsync(() => _runtimeCameraService.UpsertCamera(upsertRequest));
+                        await WriteJsonAsync(context.Response, HttpStatusCode.OK, response);
+                        return;
+                    }
+
                     case "POST" when path == "/v1/reset":
                         await _mainThreadDispatcher.EnqueueAsync(() => _taskResetService.ResetScene());
                         await WriteJsonAsync(context.Response, HttpStatusCode.OK, new ResetResponse { ok = true });
                         return;
+
+                    case "DELETE" when path.StartsWith("/v1/cameras/", StringComparison.Ordinal):
+                    {
+                        var cameraName = ExtractManagedCameraName(path);
+                        var response = await _mainThreadDispatcher.EnqueueAsync(() => _runtimeCameraService.DeleteRuntimeCamera(cameraName));
+                        await WriteJsonAsync(context.Response, HttpStatusCode.OK, response);
+                        return;
+                    }
                 }
 
                 await WriteErrorAsync(context.Response, HttpStatusCode.NotFound, "not_found", $"No route matches {request.HttpMethod} {path}.");
@@ -268,6 +297,12 @@ namespace VlaStudy.UnityHarness.Api
             return Uri.UnescapeDataString(path.Substring(prefixLength, path.Length - prefixLength - suffixLength));
         }
 
+        private static string ExtractManagedCameraName(string path)
+        {
+            var prefixLength = "/v1/cameras/".Length;
+            return Uri.UnescapeDataString(path.Substring(prefixLength));
+        }
+
         private static int ParseInt(string rawValue, int fallback)
         {
             return int.TryParse(rawValue, out var parsedValue) ? parsedValue : fallback;
@@ -293,7 +328,6 @@ namespace VlaStudy.UnityHarness.Api
         {
             response.StatusCode = (int)statusCode;
             response.ContentType = contentType;
-            response.ContentEncoding = Encoding.UTF8;
             response.ContentLength64 = bytes.LongLength;
             await response.OutputStream.WriteAsync(bytes, 0, bytes.Length);
         }

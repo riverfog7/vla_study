@@ -14,6 +14,8 @@ from vla_control.errors import UnityApiError, UnityProtocolError, UnityTransport
 from vla_control.image_utils import decode_jpeg_bytes
 from vla_control.models import (
     CameraRequest,
+    CameraListResponse,
+    DeleteCameraResponse,
     ErrorResponse,
     HealthResponse,
     MoveToPoseResponse,
@@ -22,6 +24,8 @@ from vla_control.models import (
     StateResponse,
     StepRequest,
     StepResponse,
+    UpsertCameraRequest,
+    UpsertCameraResponse,
 )
 
 ResponseModelT = TypeVar("ResponseModelT", bound=BaseModel)
@@ -96,19 +100,52 @@ class UnityClient:
             )
         )
 
+    def list_cameras(self) -> CameraListResponse:
+        return self._request_model("GET", "/v1/cameras", CameraListResponse)
+
+    def upsert_camera(
+        self, request: UpsertCameraRequest | dict[str, Any]
+    ) -> UpsertCameraResponse:
+        request_model = (
+            request
+            if isinstance(request, UpsertCameraRequest)
+            else UpsertCameraRequest.model_validate(request)
+        )
+        return self._request_model(
+            "POST", "/v1/cameras/upsert", UpsertCameraResponse, body=request_model
+        )
+
+    def delete_camera(self, camera_name: str) -> DeleteCameraResponse:
+        if not camera_name:
+            raise ValueError("camera_name must be non-empty")
+        camera_name_path = quote(camera_name, safe="")
+        return self._request_model(
+            "DELETE", f"/v1/cameras/{camera_name_path}", DeleteCameraResponse
+        )
+
     def move_to_pose(self, command: PoseCommand | dict[str, Any]) -> MoveToPoseResponse:
-        request_model = command if isinstance(command, PoseCommand) else PoseCommand.model_validate(command)
-        return self._request_model("POST", "/v1/robot/move_to_pose", MoveToPoseResponse, body=request_model)
+        request_model = (
+            command
+            if isinstance(command, PoseCommand)
+            else PoseCommand.model_validate(command)
+        )
+        return self._request_model(
+            "POST", "/v1/robot/move_to_pose", MoveToPoseResponse, body=request_model
+        )
 
     def step(self, steps: int, dt: float) -> StepResponse:
-        return self._request_model("POST", "/v1/sim/step", StepResponse, body=StepRequest(steps=steps, dt=dt))
+        return self._request_model(
+            "POST", "/v1/sim/step", StepResponse, body=StepRequest(steps=steps, dt=dt)
+        )
 
     def step_control_interval(self) -> StepResponse:
         state = self.get_state()
         return self.step(state.steps_per_action, state.physics_dt)
 
     def reset(self) -> ResetResponse:
-        return self._request_model("POST", "/v1/reset", ResetResponse, empty_post_body=True)
+        return self._request_model(
+            "POST", "/v1/reset", ResetResponse, empty_post_body=True
+        )
 
     def _request_model(
         self,
@@ -120,12 +157,16 @@ class UnityClient:
         body: BaseModel | None = None,
         empty_post_body: bool = False,
     ) -> ResponseModelT:
-        payload = self._request_bytes(method, path, query=query, body=body, empty_post_body=empty_post_body)
+        payload = self._request_bytes(
+            method, path, query=query, body=body, empty_post_body=empty_post_body
+        )
         try:
             return model_type.model_validate_json(payload)
         except ValidationError as exc:
             decoded = payload.decode("utf-8", errors="replace")
-            raise UnityProtocolError(f"Unity returned invalid JSON for {path}: {decoded}") from exc
+            raise UnityProtocolError(
+                f"Unity returned invalid JSON for {path}: {decoded}"
+            ) from exc
 
     def _request_bytes(
         self,
@@ -158,7 +199,9 @@ class UnityClient:
         except HTTPError as exc:
             self._raise_api_error(exc)
         except URLError as exc:
-            raise UnityTransportError(f"Could not reach Unity at {self.config.base_url}: {exc.reason}") from exc
+            raise UnityTransportError(
+                f"Could not reach Unity at {self.config.base_url}: {exc.reason}"
+            ) from exc
 
     def _build_url(self, path: str, *, query: dict[str, str] | None = None) -> str:
         normalized_path = path if path.startswith("/") else f"/{path}"
@@ -182,4 +225,6 @@ class UnityClient:
             except ValidationError:
                 details = decoded
 
-        raise UnityApiError(status_code=exc.code, error=error, details=details, body=decoded) from exc
+        raise UnityApiError(
+            status_code=exc.code, error=error, details=details, body=decoded
+        ) from exc

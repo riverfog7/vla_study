@@ -14,6 +14,8 @@ namespace VlaStudy.UnityHarness.Bootstrap
         [SerializeField] private SimulationController simulationController;
         [SerializeField] private CameraRegistry cameraRegistry;
         [SerializeField] private CameraCaptureService cameraCaptureService;
+        [SerializeField] private CameraMountService cameraMountService;
+        [SerializeField] private RuntimeCameraService runtimeCameraService;
         [SerializeField] private ProxyPoseAdapter proxyPoseAdapter;
         [SerializeField] private SceneStateService sceneStateService;
         [SerializeField] private TaskResetService taskResetService;
@@ -46,16 +48,19 @@ namespace VlaStudy.UnityHarness.Bootstrap
                 return;
             }
 
-            cameraRegistry.Register("main", sceneReferences.MainCamera);
+            cameraRegistry.Clear();
+            cameraMountService.Configure(sceneReferences);
             cameraCaptureService.Configure(cameraRegistry);
+            runtimeCameraService.Configure(cameraRegistry, cameraMountService);
             proxyPoseAdapter.Configure(
                 sceneReferences.ProxyEndEffector,
                 sceneReferences.ProxyEndEffector.position,
                 sceneReferences.ProxyEndEffector.rotation);
             simulationController.Configure(proxyPoseAdapter);
+            RegisterAuthoredCameras();
             sceneStateService.Configure(simulationController, proxyPoseAdapter);
             taskResetService.Configure(simulationController, proxyPoseAdapter, sceneReferences.TargetObject);
-            httpApiServer.Configure(mainThreadDispatcher, simulationController, sceneStateService, cameraCaptureService, proxyPoseAdapter, taskResetService);
+            httpApiServer.Configure(mainThreadDispatcher, simulationController, sceneStateService, cameraCaptureService, cameraRegistry, runtimeCameraService, proxyPoseAdapter, taskResetService);
 
             _isConfigured = true;
         }
@@ -68,7 +73,7 @@ namespace VlaStudy.UnityHarness.Bootstrap
             }
 
             Debug.Log(
-                $"Harness ready: http://{httpApiServer.Host}:{httpApiServer.Port}/v1/ | physics_dt={simulationController.PhysicsDt:0.###} | policy_period={simulationController.PolicyPeriodSeconds:0.###} | steps_per_action={simulationController.StepsPerAction}");
+                $"Harness ready: http://{httpApiServer.Host}:{httpApiServer.Port}/v1/ | physics_dt={simulationController.PhysicsDt:0.###} | policy_period={simulationController.PolicyPeriodSeconds:0.###} | steps_per_action={simulationController.StepsPerAction} | cameras={string.Join(",", GetCameraNames())}");
         }
 
         private void AutoAssignReferences()
@@ -78,6 +83,8 @@ namespace VlaStudy.UnityHarness.Bootstrap
             simulationController ??= GetComponent<SimulationController>();
             cameraRegistry ??= GetComponent<CameraRegistry>();
             cameraCaptureService ??= GetComponent<CameraCaptureService>();
+            cameraMountService ??= GetComponent<CameraMountService>();
+            runtimeCameraService ??= GetComponent<RuntimeCameraService>();
             proxyPoseAdapter ??= GetComponent<ProxyPoseAdapter>();
             sceneStateService ??= GetComponent<SceneStateService>();
             taskResetService ??= GetComponent<TaskResetService>();
@@ -98,12 +105,59 @@ namespace VlaStudy.UnityHarness.Bootstrap
             isValid &= ValidateComponent(simulationController, nameof(simulationController));
             isValid &= ValidateComponent(cameraRegistry, nameof(cameraRegistry));
             isValid &= ValidateComponent(cameraCaptureService, nameof(cameraCaptureService));
+            isValid &= ValidateComponent(cameraMountService, nameof(cameraMountService));
+            isValid &= ValidateComponent(runtimeCameraService, nameof(runtimeCameraService));
             isValid &= ValidateComponent(proxyPoseAdapter, nameof(proxyPoseAdapter));
             isValid &= ValidateComponent(sceneStateService, nameof(sceneStateService));
             isValid &= ValidateComponent(taskResetService, nameof(taskResetService));
             isValid &= ValidateComponent(httpApiServer, nameof(httpApiServer));
 
+            if (sceneReferences != null && !sceneReferences.HasCameraNamed("main"))
+            {
+                Debug.LogError("HarnessSceneBootstrap requires an authored camera named 'main'.", this);
+                isValid = false;
+            }
+
             return isValid;
+        }
+
+        private void RegisterAuthoredCameras()
+        {
+            foreach (var cameraDefinition in sceneReferences.Cameras)
+            {
+                if (cameraDefinition == null || !cameraDefinition.IsValid())
+                {
+                    continue;
+                }
+
+                cameraDefinition.camera.enabled = cameraDefinition.enabled;
+                var descriptor = new RegisteredCameraDescriptor
+                {
+                    CameraName = cameraDefinition.cameraName,
+                    Camera = cameraDefinition.camera,
+                    IsRuntime = false,
+                    MountTargetName = string.IsNullOrWhiteSpace(cameraDefinition.mountTarget) ? string.Empty : cameraMountService.NormalizeMountTargetName(cameraDefinition.mountTarget),
+                    LocalPositionOffset = cameraDefinition.localPositionOffset,
+                    LocalRotationEuler = cameraDefinition.localRotationEuler,
+                    TemplateCameraName = cameraDefinition.cameraName,
+                };
+                cameraMountService.ApplyAuthoredCameraMount(descriptor);
+                cameraRegistry.RegisterAuthored(descriptor);
+            }
+        }
+
+        private string[] GetCameraNames()
+        {
+            var names = new System.Collections.Generic.List<string>();
+            foreach (var cameraDefinition in sceneReferences.Cameras)
+            {
+                if (cameraDefinition != null && cameraDefinition.IsValid())
+                {
+                    names.Add(cameraDefinition.cameraName);
+                }
+            }
+
+            return names.ToArray();
         }
 
         private bool ValidateComponent(Object component, string fieldName)

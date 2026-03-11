@@ -57,6 +57,54 @@ namespace VlaStudy.UnityHarness.Data
     }
 
     [Serializable]
+    public class CameraInfo
+    {
+        public string name;
+        public string source;
+        public bool enabled;
+        public bool mounted;
+        public string mount_target;
+        public PoseData world_pose;
+        public Vector3Data local_position;
+        public Vector3Data local_rotation_euler;
+        public float field_of_view;
+        public string template_camera;
+    }
+
+    [Serializable]
+    public class CameraListResponse
+    {
+        public CameraInfo[] cameras = Array.Empty<CameraInfo>();
+    }
+
+    [Serializable]
+    public class UpsertCameraRequest
+    {
+        public string name;
+        public string template_camera = "main";
+        public string mount_target = string.Empty;
+        public Vector3Data world_position;
+        public Vector3Data world_rotation_euler;
+        public Vector3Data local_position;
+        public Vector3Data local_rotation_euler;
+        public bool enabled = true;
+    }
+
+    [Serializable]
+    public class UpsertCameraResponse
+    {
+        public bool ok;
+        public CameraInfo camera;
+    }
+
+    [Serializable]
+    public class DeleteCameraResponse
+    {
+        public bool ok;
+        public string name;
+    }
+
+    [Serializable]
     public class ErrorResponse
     {
         public string error;

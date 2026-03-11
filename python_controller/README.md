@@ -29,6 +29,28 @@ image
 
 `get_camera()` returns a `PIL.Image.Image`, so notebooks can display it directly.
 
+## Managing named cameras
+
+```python
+from vla_control import UnityClient, UpsertCameraRequest, Vector3
+
+client = UnityClient()
+
+client.list_cameras()
+
+client.upsert_camera(
+    UpsertCameraRequest.mounted(
+        name="wrist",
+        mount_target="proxy_camera_mount",
+        local_position=Vector3(x=0.0, y=0.08, z=-0.12),
+        local_rotation_euler=Vector3(x=15.0, y=0.0, z=0.0),
+    )
+)
+
+wrist_image = client.get_camera("wrist")
+client.delete_camera("wrist")
+```
+
 ## Notebook rollout usage
 
 ```python

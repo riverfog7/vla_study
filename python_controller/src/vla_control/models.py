@@ -96,6 +96,55 @@ class CameraRequest(UnityRequestModel):
         }
 
 
+class UpsertCameraRequest(UnityRequestModel):
+    name: str = Field(min_length=1)
+    template_camera: str = Field(default="main", min_length=1)
+    mount_target: str | None = None
+    world_position: Vector3 | None = None
+    world_rotation_euler: Vector3 | None = None
+    local_position: Vector3 | None = None
+    local_rotation_euler: Vector3 | None = None
+    enabled: bool = True
+
+    @classmethod
+    def mounted(
+        cls,
+        *,
+        name: str,
+        mount_target: str = "proxy_camera_mount",
+        template_camera: str = "main",
+        local_position: Vector3 | None = None,
+        local_rotation_euler: Vector3 | None = None,
+        enabled: bool = True,
+    ) -> "UpsertCameraRequest":
+        return cls(
+            name=name,
+            template_camera=template_camera,
+            mount_target=mount_target,
+            local_position=local_position,
+            local_rotation_euler=local_rotation_euler,
+            enabled=enabled,
+        )
+
+    @classmethod
+    def world(
+        cls,
+        *,
+        name: str,
+        template_camera: str = "main",
+        world_position: Vector3 | None = None,
+        world_rotation_euler: Vector3 | None = None,
+        enabled: bool = True,
+    ) -> "UpsertCameraRequest":
+        return cls(
+            name=name,
+            template_camera=template_camera,
+            world_position=world_position,
+            world_rotation_euler=world_rotation_euler,
+            enabled=enabled,
+        )
+
+
 class StepRequest(UnityRequestModel):
     steps: int = Field(default=1, ge=1)
     dt: float = Field(gt=0.0)
@@ -136,6 +185,33 @@ class MoveToPoseResponse(UnityBaseModel):
 
 class ResetResponse(UnityBaseModel):
     ok: bool
+
+
+class CameraInfo(UnityBaseModel):
+    name: str
+    source: str
+    enabled: bool
+    mounted: bool
+    mount_target: str | None = None
+    world_pose: Pose
+    local_position: Vector3
+    local_rotation_euler: Vector3
+    field_of_view: float
+    template_camera: str | None = None
+
+
+class CameraListResponse(UnityBaseModel):
+    cameras: list[CameraInfo] = Field(default_factory=list)
+
+
+class UpsertCameraResponse(UnityBaseModel):
+    ok: bool
+    camera: CameraInfo
+
+
+class DeleteCameraResponse(UnityBaseModel):
+    ok: bool
+    name: str
 
 
 class ErrorResponse(UnityBaseModel):
