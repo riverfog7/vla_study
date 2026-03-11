@@ -2,19 +2,12 @@ version = 1
 revision = 3
 requires-python = "==3.10.*"
 resolution-markers = [
-    "(platform_machine != 'aarch64' and extra != 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra != 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra != 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')",
-    "platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra != 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118'",
-    "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118')",
-    "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118')",
-    "extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118'",
+    "platform_machine != 'aarch64' or platform_python_implementation != 'CPython' or sys_platform != 'linux'",
+    "platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux'",
 ]
 required-markers = [
     "platform_machine == 'x86_64' and sys_platform == 'linux'",
 ]
-conflicts = [[
-    { package = "openvla-runtime", extra = "cpu" },
-    { package = "openvla-runtime", extra = "cu118" },
-]]
 
 [[package]]
 name = "accelerate"
@@ -27,10 +20,7 @@ dependencies = [
     { name = "psutil" },
     { name = "pyyaml" },
     { name = "safetensors" },
-    { name = "torch", version = "2.2.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "torch", version = "2.2.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118')" },
-    { name = "torch", version = "2.2.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_python_implementation != 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "torch", version = "2.2.0+cu118", source = { registry = "https://download.pytorch.org/whl/cu118" }, marker = "extra == 'extra-15-openvla-runtime-cu118'" },
+    { name = "torch" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/f8/7d/52c6f11bfeaae2d8dd95ca8923c4330bfe41ba2e3375209eaa7bbe41b04f/accelerate-0.25.0.tar.gz", hash = "sha256:ecf55b0ab278a1dac8539dde0d276977aff04683f07ede73eaf02478538576a1", size = 261424, upload-time = "2023-12-01T14:33:29.938Z" }
 wheels = [
@@ -108,7 +98,7 @@ name = "click"
 version = "8.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32' or (extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/3d/fa/656b739db8587d7b5dfa22e22ed02566950fbfbcdc20311993483657a5c0/click-8.3.1.tar.gz", hash = "sha256:12ff4785d337a1bb490bb7e9c2b1ee5da3112e94a8622f26a6c77f5d2fc6842a", size = 295065, upload-time = "2025-11-15T20:45:42.706Z" }
 wheels = [
@@ -178,7 +168,7 @@ dependencies = [
     { name = "einops" },
     { name = "ninja" },
     { name = "packaging" },
-    { name = "torch", version = "2.2.0+cu118", source = { registry = "https://download.pytorch.org/whl/cu118" } },
+    { name = "torch" },
 ]
 wheels = [
     { url = "https://github.com/Dao-AILab/flash-attention/releases/download/v2.5.5/flash_attn-2.5.5%2Bcu118torch2.2cxx11abiFALSE-cp310-cp310-linux_x86_64.whl", hash = "sha256:b797b2c95a5e9f2565b072aa56f178bd68b5fef9e0ad03dd74f9cf7e973bfd92" },
@@ -248,7 +238,7 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "filelock" },
     { name = "fsspec" },
-    { name = "hf-xet", marker = "platform_machine == 'aarch64' or platform_machine == 'amd64' or platform_machine == 'arm64' or platform_machine == 'x86_64' or (extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
+    { name = "hf-xet", marker = "platform_machine == 'aarch64' or platform_machine == 'amd64' or platform_machine == 'arm64' or platform_machine == 'x86_64'" },
     { name = "packaging" },
     { name = "pyyaml" },
     { name = "requests" },
@@ -372,15 +362,6 @@ wheels = [
 ]
 
 [[package]]
-name = "nvidia-cublas-cu12"
-version = "12.1.3.1"
-source = { registry = "https://pypi.org/simple" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/37/6d/121efd7382d5b0284239f4ab1fc1590d86d34ed4a4a2fdb13b30ca8e5740/nvidia_cublas_cu12-12.1.3.1-py3-none-manylinux1_x86_64.whl", hash = "sha256:ee53ccca76a6fc08fb9701aa95b6ceb242cdaab118c3bb152af4e579af792728", size = 410594774, upload-time = "2023-04-19T15:50:03.519Z" },
-    { url = "https://files.pythonhosted.org/packages/c5/ef/32a375b74bea706c93deea5613552f7c9104f961b21df423f5887eca713b/nvidia_cublas_cu12-12.1.3.1-py3-none-win_amd64.whl", hash = "sha256:2b964d60e8cf11b5e1073d179d85fa340c120e99b3067558f3cf98dd69d02906", size = 439918445, upload-time = "2023-04-19T15:56:13.346Z" },
-]
-
-[[package]]
 name = "nvidia-cuda-cupti-cu11"
 version = "11.8.87"
 source = { registry = "https://pypi.org/simple" }
@@ -389,15 +370,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/1e/5a/fb7e315aaa9d2bb28d3f2d9127375823c43646e07db4fe1b08746626e677/nvidia_cuda_cupti_cu11-11.8.87-py3-none-manylinux2014_aarch64.whl", hash = "sha256:9aaa638963a8271df26b6ee0d93b781730b7acc6581ff700bd023d7934e4385e", size = 11687484, upload-time = "2024-08-16T23:56:27.303Z" },
     { url = "https://files.pythonhosted.org/packages/74/42/9f5c5cc084ce6f3073048c4f6806f45ba4c8c73f227c9587215d9c372e05/nvidia_cuda_cupti_cu11-11.8.87-py3-none-manylinux2014_x86_64.whl", hash = "sha256:4191a17913a706b5098681280cd089cd7d8d3df209a6f5cb79384974a96d24f2", size = 13093662, upload-time = "2024-08-16T23:56:38.082Z" },
     { url = "https://files.pythonhosted.org/packages/9c/b9/371cff81be29e008a69f1681f468a2b428fa4ea03842196c178cb4cf1991/nvidia_cuda_cupti_cu11-11.8.87-py3-none-win_amd64.whl", hash = "sha256:4332d8550ad5f5b673f98d08e4e4f82030cb604c66d8d5ee919399ea01312e58", size = 9952361, upload-time = "2022-10-03T23:38:14.399Z" },
-]
-
-[[package]]
-name = "nvidia-cuda-cupti-cu12"
-version = "12.1.105"
-source = { registry = "https://pypi.org/simple" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/7e/00/6b218edd739ecfc60524e585ba8e6b00554dd908de2c9c66c1af3e44e18d/nvidia_cuda_cupti_cu12-12.1.105-py3-none-manylinux1_x86_64.whl", hash = "sha256:e54fde3983165c624cb79254ae9818a456eb6e87a7fd4d56a2352c24ee542d7e", size = 14109015, upload-time = "2023-04-19T15:47:32.502Z" },
-    { url = "https://files.pythonhosted.org/packages/d0/56/0021e32ea2848c24242f6b56790bd0ccc8bf99f973ca790569c6ca028107/nvidia_cuda_cupti_cu12-12.1.105-py3-none-win_amd64.whl", hash = "sha256:bea8236d13a0ac7190bd2919c3e8e6ce1e402104276e6f9694479e48bb0eb2a4", size = 10154340, upload-time = "2023-04-19T15:53:33.563Z" },
 ]
 
 [[package]]
@@ -412,15 +384,6 @@ wheels = [
 ]
 
 [[package]]
-name = "nvidia-cuda-nvrtc-cu12"
-version = "12.1.105"
-source = { registry = "https://pypi.org/simple" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b6/9f/c64c03f49d6fbc56196664d05dba14e3a561038a81a638eeb47f4d4cfd48/nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-manylinux1_x86_64.whl", hash = "sha256:339b385f50c309763ca65456ec75e17bbefcbbf2893f462cb8b90584cd27a1c2", size = 23671734, upload-time = "2023-04-19T15:48:32.42Z" },
-    { url = "https://files.pythonhosted.org/packages/ad/1d/f76987c4f454eb86e0b9a0e4f57c3bf1ac1d13ad13cd1a4da4eb0e0c0ce9/nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-win_amd64.whl", hash = "sha256:0a98a522d9ff138b96c010a65e145dc1b4850e9ecb75a0172371793752fd46ed", size = 19331863, upload-time = "2023-04-19T15:54:34.603Z" },
-]
-
-[[package]]
 name = "nvidia-cuda-runtime-cu11"
 version = "11.8.89"
 source = { registry = "https://pypi.org/simple" }
@@ -432,34 +395,14 @@ wheels = [
 ]
 
 [[package]]
-name = "nvidia-cuda-runtime-cu12"
-version = "12.1.105"
-source = { registry = "https://pypi.org/simple" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/eb/d5/c68b1d2cdfcc59e72e8a5949a37ddb22ae6cade80cd4a57a84d4c8b55472/nvidia_cuda_runtime_cu12-12.1.105-py3-none-manylinux1_x86_64.whl", hash = "sha256:6e258468ddf5796e25f1dc591a31029fa317d97a0a94ed93468fc86301d61e40", size = 823596, upload-time = "2023-04-19T15:47:22.471Z" },
-    { url = "https://files.pythonhosted.org/packages/9f/e2/7a2b4b5064af56ea8ea2d8b2776c0f2960d95c88716138806121ae52a9c9/nvidia_cuda_runtime_cu12-12.1.105-py3-none-win_amd64.whl", hash = "sha256:dfb46ef84d73fababab44cf03e3b83f80700d27ca300e537f85f636fac474344", size = 821226, upload-time = "2023-04-19T15:53:23.082Z" },
-]
-
-[[package]]
 name = "nvidia-cudnn-cu11"
 version = "8.7.0.84"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "nvidia-cublas-cu11", marker = "extra == 'extra-15-openvla-runtime-cu118'" },
+    { name = "nvidia-cublas-cu11" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0b/f6/921e080645b9e66fbf7567b5aa1741bcded69862f42f1dce796883c3345c/nvidia_cudnn_cu11-8.7.0.84-py3-none-manylinux1_x86_64.whl", hash = "sha256:b3e062498fbbb1c1930435a6a454c1b41c903e1e65b7063bd2b4021e8285408e", size = 728455279, upload-time = "2022-11-30T00:31:11.15Z" },
-]
-
-[[package]]
-name = "nvidia-cudnn-cu12"
-version = "8.9.2.26"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "nvidia-cublas-cu12", marker = "(extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118')" },
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/ff/74/a2e2be7fb83aaedec84f391f082cf765dfb635e7caa9b49065f73e4835d8/nvidia_cudnn_cu12-8.9.2.26-py3-none-manylinux1_x86_64.whl", hash = "sha256:5ccb288774fdfb07a7e7025ffec286971c06d8d7b4fb162525334616d7629ff9", size = 731725872, upload-time = "2023-06-01T19:24:57.328Z" },
 ]
 
 [[package]]
@@ -474,15 +417,6 @@ wheels = [
 ]
 
 [[package]]
-name = "nvidia-cufft-cu12"
-version = "11.0.2.54"
-source = { registry = "https://pypi.org/simple" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/86/94/eb540db023ce1d162e7bea9f8f5aa781d57c65aed513c33ee9a5123ead4d/nvidia_cufft_cu12-11.0.2.54-py3-none-manylinux1_x86_64.whl", hash = "sha256:794e3948a1aa71fd817c3775866943936774d1c14e7628c74f6f7417224cdf56", size = 121635161, upload-time = "2023-04-19T15:50:46Z" },
-    { url = "https://files.pythonhosted.org/packages/f7/57/7927a3aa0e19927dfed30256d1c854caf991655d847a4e7c01fe87e3d4ac/nvidia_cufft_cu12-11.0.2.54-py3-none-win_amd64.whl", hash = "sha256:d9ac353f78ff89951da4af698f80870b1534ed69993f10a4cf1d96f21357e253", size = 121344196, upload-time = "2023-04-19T15:56:59.562Z" },
-]
-
-[[package]]
 name = "nvidia-curand-cu11"
 version = "10.3.0.86"
 source = { registry = "https://pypi.org/simple" }
@@ -494,40 +428,17 @@ wheels = [
 ]
 
 [[package]]
-name = "nvidia-curand-cu12"
-version = "10.3.2.106"
-source = { registry = "https://pypi.org/simple" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/44/31/4890b1c9abc496303412947fc7dcea3d14861720642b49e8ceed89636705/nvidia_curand_cu12-10.3.2.106-py3-none-manylinux1_x86_64.whl", hash = "sha256:9d264c5036dde4e64f1de8c50ae753237c12e0b1348738169cd0f8a536c0e1e0", size = 56467784, upload-time = "2023-04-19T15:51:04.804Z" },
-    { url = "https://files.pythonhosted.org/packages/5c/97/4c9c7c79efcdf5b70374241d48cf03b94ef6707fd18ea0c0f53684931d0b/nvidia_curand_cu12-10.3.2.106-py3-none-win_amd64.whl", hash = "sha256:75b6b0c574c0037839121317e17fd01f8a69fd2ef8e25853d826fec30bdba74a", size = 55995813, upload-time = "2023-04-19T15:57:16.676Z" },
-]
-
-[[package]]
 name = "nvidia-cusolver-cu11"
 version = "11.4.1.48"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "nvidia-cublas-cu11", marker = "extra == 'extra-15-openvla-runtime-cu118'" },
+    { name = "nvidia-cublas-cu11" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/55/ee/939ff0104991dd7bdabb4c9767994c612ba0e1c9a55672a1ddd42f5e5b16/nvidia_cusolver_cu11-11.4.1.48-py3-none-manylinux1_x86_64.whl", hash = "sha256:ca538f545645b7e6629140786d3127fe067b3d5a085bd794cde5bfe877c8926f", size = 128240842, upload-time = "2022-10-03T23:30:24.348Z" },
     { url = "https://files.pythonhosted.org/packages/d8/32/676f0cfea4ff5bbc6dcfe00b5f385ba49d322dc8e9ff1ef864b570e27e9e/nvidia_cusolver_cu11-11.4.1.48-py3-none-manylinux2014_aarch64.whl", hash = "sha256:1a96acb05768610bc414dbef5b25ebd2d820fc8a1e8c72097f41f53d80934d61", size = 127903177, upload-time = "2024-08-17T00:03:20.657Z" },
     { url = "https://files.pythonhosted.org/packages/52/fe/866e87e6e6a1b0a5fcf8524a058042656702f2057e22bfdb8899a7c38e10/nvidia_cusolver_cu11-11.4.1.48-py3-none-manylinux2014_x86_64.whl", hash = "sha256:ea9fb1ad8c644ca9ed55af13cc39af3b7ba4c3eb5aef18471fe1fe77d94383cb", size = 128246438, upload-time = "2024-08-17T00:03:52.432Z" },
     { url = "https://files.pythonhosted.org/packages/1e/94/4fd658d09776307b98411eca09dd77773d8c3bdc484b186a2084038b75e2/nvidia_cusolver_cu11-11.4.1.48-py3-none-win_amd64.whl", hash = "sha256:7efe43b113495a64e2cf9a0b4365bd53b0a82afb2e2cf91e9f993c9ef5e69ee8", size = 125732382, upload-time = "2022-10-03T23:40:44.179Z" },
-]
-
-[[package]]
-name = "nvidia-cusolver-cu12"
-version = "11.4.5.107"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "nvidia-cublas-cu12", marker = "(extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-cusparse-cu12", marker = "(extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-nvjitlink-cu12", marker = "(extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118')" },
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/bc/1d/8de1e5c67099015c834315e333911273a8c6aaba78923dd1d1e25fc5f217/nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl", hash = "sha256:8a7ec542f0412294b15072fa7dab71d31334014a69f953004ea7a118206fe0dd", size = 124161928, upload-time = "2023-04-19T15:51:25.781Z" },
-    { url = "https://files.pythonhosted.org/packages/b8/80/8fca0bf819122a631c3976b6fc517c1b10741b643b94046bd8dd451522c5/nvidia_cusolver_cu12-11.4.5.107-py3-none-win_amd64.whl", hash = "sha256:74e0c3a24c78612192a74fcd90dd117f1cf21dea4822e66d89e8ea80e3cd2da5", size = 121643081, upload-time = "2023-04-19T15:57:43.035Z" },
 ]
 
 [[package]]
@@ -542,41 +453,11 @@ wheels = [
 ]
 
 [[package]]
-name = "nvidia-cusparse-cu12"
-version = "12.1.0.106"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "nvidia-nvjitlink-cu12", marker = "(extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118')" },
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/65/5b/cfaeebf25cd9fdec14338ccb16f6b2c4c7fa9163aefcf057d86b9cc248bb/nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl", hash = "sha256:f3b50f42cf363f86ab21f720998517a659a48131e8d538dc02f8768237bd884c", size = 195958278, upload-time = "2023-04-19T15:51:49.939Z" },
-    { url = "https://files.pythonhosted.org/packages/0f/95/48fdbba24c93614d1ecd35bc6bdc6087bd17cbacc3abc4b05a9c2a1ca232/nvidia_cusparse_cu12-12.1.0.106-py3-none-win_amd64.whl", hash = "sha256:b798237e81b9719373e8fae8d4f091b70a0cf09d9d85c95a557e11df2d8e9a5a", size = 195414588, upload-time = "2023-04-19T15:58:08.389Z" },
-]
-
-[[package]]
 name = "nvidia-nccl-cu11"
 version = "2.19.3"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0e/7d/cc3dbf36c5af39b042d508b7a441ada1fce69bd18c800e5c25dc4e9f8933/nvidia_nccl_cu11-2.19.3-py3-none-manylinux1_x86_64.whl", hash = "sha256:7c58afbeddf7f7c6b7dd7d84a7f4e85462610ee0c656287388b96d89dcf046d5", size = 135288005, upload-time = "2023-10-24T16:17:49.025Z" },
-]
-
-[[package]]
-name = "nvidia-nccl-cu12"
-version = "2.19.3"
-source = { registry = "https://pypi.org/simple" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/38/00/d0d4e48aef772ad5aebcf70b73028f88db6e5640b36c38e90445b7a57c45/nvidia_nccl_cu12-2.19.3-py3-none-manylinux1_x86_64.whl", hash = "sha256:a9734707a2c96443331c1e48c717024aa6678a0e2a4cb66b2c364d18cee6b48d", size = 165987969, upload-time = "2023-10-24T16:16:24.789Z" },
-]
-
-[[package]]
-name = "nvidia-nvjitlink-cu12"
-version = "12.9.86"
-source = { registry = "https://pypi.org/simple" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/46/0c/c75bbfb967457a0b7670b8ad267bfc4fffdf341c074e0a80db06c24ccfd4/nvidia_nvjitlink_cu12-12.9.86-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl", hash = "sha256:e3f1171dbdc83c5932a45f0f4c99180a70de9bd2718c1ab77d14104f6d7147f9", size = 39748338, upload-time = "2025-06-05T20:10:25.613Z" },
-    { url = "https://files.pythonhosted.org/packages/97/bc/2dcba8e70cf3115b400fef54f213bcd6715a3195eba000f8330f11e40c45/nvidia_nvjitlink_cu12-12.9.86-py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:994a05ef08ef4b0b299829cde613a424382aff7efb08a7172c1fa616cc3af2ca", size = 39514880, upload-time = "2025-06-05T20:10:04.89Z" },
-    { url = "https://files.pythonhosted.org/packages/dd/7e/2eecb277d8a98184d881fb98a738363fd4f14577a4d2d7f8264266e82623/nvidia_nvjitlink_cu12-12.9.86-py3-none-win_amd64.whl", hash = "sha256:cc6fcec260ca843c10e34c936921a1c426b351753587fdd638e8cff7b16bb9db", size = 35584936, upload-time = "2025-06-05T20:16:08.525Z" },
 ]
 
 [[package]]
@@ -591,15 +472,6 @@ wheels = [
 ]
 
 [[package]]
-name = "nvidia-nvtx-cu12"
-version = "12.1.105"
-source = { registry = "https://pypi.org/simple" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/da/d3/8057f0587683ed2fcd4dbfbdfdfa807b9160b809976099d36b8f60d08f03/nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl", hash = "sha256:dc21cf308ca5691e7c04d962e213f8a4aa9bbfa23d95412f452254c2caeb09e5", size = 99138, upload-time = "2023-04-19T15:48:43.556Z" },
-    { url = "https://files.pythonhosted.org/packages/b8/d7/bd7cb2d95ac6ac6e8d05bfa96cdce69619f1ef2808e072919044c2d47a8c/nvidia_nvtx_cu12-12.1.105-py3-none-win_amd64.whl", hash = "sha256:65f4d98982b31b60026e0e6de73fbdfc09d08a96f4656dd3665ca616a11e1e82", size = 66307, upload-time = "2023-04-19T15:54:45.736Z" },
-]
-
-[[package]]
 name = "openvla-runtime"
 version = "0.1.0"
 source = { editable = "." }
@@ -607,7 +479,20 @@ dependencies = [
     { name = "accelerate" },
     { name = "einops" },
     { name = "fastapi" },
+    { name = "flash-attn" },
+    { name = "ninja" },
     { name = "numpy" },
+    { name = "nvidia-cublas-cu11" },
+    { name = "nvidia-cuda-cupti-cu11" },
+    { name = "nvidia-cuda-nvrtc-cu11" },
+    { name = "nvidia-cuda-runtime-cu11" },
+    { name = "nvidia-cudnn-cu11" },
+    { name = "nvidia-cufft-cu11" },
+    { name = "nvidia-curand-cu11" },
+    { name = "nvidia-cusolver-cu11" },
+    { name = "nvidia-cusparse-cu11" },
+    { name = "nvidia-nccl-cu11" },
+    { name = "nvidia-nvtx-cu11" },
     { name = "peft" },
     { name = "pillow" },
     { name = "pydantic" },
@@ -616,22 +501,12 @@ dependencies = [
     { name = "sentencepiece" },
     { name = "timm" },
     { name = "tokenizers" },
+    { name = "torch" },
+    { name = "torchvision", version = "0.17.0", source = { registry = "https://download.pytorch.org/whl/cu118" }, marker = "platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux'" },
+    { name = "torchvision", version = "0.17.0+cu118", source = { registry = "https://download.pytorch.org/whl/cu118" }, marker = "platform_machine != 'aarch64' or platform_python_implementation != 'CPython' or sys_platform != 'linux'" },
     { name = "transformers" },
+    { name = "triton" },
     { name = "uvicorn", extra = ["standard"] },
-]
-
-[package.optional-dependencies]
-cpu = [
-    { name = "torch", version = "2.2.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "torch", version = "2.2.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_python_implementation != 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "torchvision", version = "0.17.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "torchvision", version = "0.17.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_python_implementation != 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-]
-cu118 = [
-    { name = "flash-attn" },
-    { name = "torch", version = "2.2.0+cu118", source = { registry = "https://download.pytorch.org/whl/cu118" } },
-    { name = "torchvision", version = "0.17.0", source = { registry = "https://download.pytorch.org/whl/cu118" }, marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "torchvision", version = "0.17.0+cu118", source = { registry = "https://download.pytorch.org/whl/cu118" }, marker = "(platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
 ]
 
 [package.metadata]
@@ -639,8 +514,20 @@ requires-dist = [
     { name = "accelerate", specifier = "==0.25.0" },
     { name = "einops", specifier = ">=0.7,<0.8" },
     { name = "fastapi", specifier = ">=0.110,<1.0" },
-    { name = "flash-attn", marker = "extra == 'cu118'", url = "https://github.com/Dao-AILab/flash-attention/releases/download/v2.5.5/flash_attn-2.5.5%2Bcu118torch2.2cxx11abiFALSE-cp310-cp310-linux_x86_64.whl" },
+    { name = "flash-attn", url = "https://github.com/Dao-AILab/flash-attention/releases/download/v2.5.5/flash_attn-2.5.5%2Bcu118torch2.2cxx11abiFALSE-cp310-cp310-linux_x86_64.whl" },
+    { name = "ninja", specifier = ">=1.11,<2.0" },
     { name = "numpy", specifier = "==1.26.4" },
+    { name = "nvidia-cublas-cu11", specifier = "==11.11.3.6" },
+    { name = "nvidia-cuda-cupti-cu11", specifier = "==11.8.87" },
+    { name = "nvidia-cuda-nvrtc-cu11", specifier = "==11.8.89" },
+    { name = "nvidia-cuda-runtime-cu11", specifier = "==11.8.89" },
+    { name = "nvidia-cudnn-cu11", specifier = "==8.7.0.84" },
+    { name = "nvidia-cufft-cu11", specifier = "==10.9.0.58" },
+    { name = "nvidia-curand-cu11", specifier = "==10.3.0.86" },
+    { name = "nvidia-cusolver-cu11", specifier = "==11.4.1.48" },
+    { name = "nvidia-cusparse-cu11", specifier = "==11.7.5.86" },
+    { name = "nvidia-nccl-cu11", specifier = "==2.19.3" },
+    { name = "nvidia-nvtx-cu11", specifier = "==11.8.86" },
     { name = "peft", specifier = "==0.11.1" },
     { name = "pillow", specifier = ">=10.0,<11.0" },
     { name = "pydantic", specifier = ">=2.7,<3.0" },
@@ -649,14 +536,12 @@ requires-dist = [
     { name = "sentencepiece", specifier = "==0.1.99" },
     { name = "timm", specifier = "==0.9.10" },
     { name = "tokenizers", specifier = "==0.19.1" },
-    { name = "torch", marker = "extra == 'cpu'", specifier = "==2.2.0", index = "https://download.pytorch.org/whl/cpu", conflict = { package = "openvla-runtime", extra = "cpu" } },
-    { name = "torch", marker = "extra == 'cu118'", specifier = "==2.2.0", index = "https://download.pytorch.org/whl/cu118", conflict = { package = "openvla-runtime", extra = "cu118" } },
-    { name = "torchvision", marker = "extra == 'cpu'", specifier = "==0.17.0", index = "https://download.pytorch.org/whl/cpu", conflict = { package = "openvla-runtime", extra = "cpu" } },
-    { name = "torchvision", marker = "extra == 'cu118'", specifier = "==0.17.0", index = "https://download.pytorch.org/whl/cu118", conflict = { package = "openvla-runtime", extra = "cu118" } },
+    { name = "torch", specifier = "==2.2.0", index = "https://download.pytorch.org/whl/cu118" },
+    { name = "torchvision", specifier = "==0.17.0", index = "https://download.pytorch.org/whl/cu118" },
     { name = "transformers", specifier = "==4.40.1" },
+    { name = "triton", specifier = "==2.2.0" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.29,<1.0" },
 ]
-provides-extras = ["cpu", "cu118"]
 
 [[package]]
 name = "packaging"
@@ -679,10 +564,7 @@ dependencies = [
     { name = "psutil" },
     { name = "pyyaml" },
     { name = "safetensors" },
-    { name = "torch", version = "2.2.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "torch", version = "2.2.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118')" },
-    { name = "torch", version = "2.2.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_python_implementation != 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "torch", version = "2.2.0+cu118", source = { registry = "https://download.pytorch.org/whl/cu118" }, marker = "extra == 'extra-15-openvla-runtime-cu118'" },
+    { name = "torch" },
     { name = "tqdm" },
     { name = "transformers" },
 ]
@@ -935,15 +817,9 @@ dependencies = [
     { name = "huggingface-hub" },
     { name = "pyyaml" },
     { name = "safetensors" },
-    { name = "torch", version = "2.2.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "torch", version = "2.2.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118')" },
-    { name = "torch", version = "2.2.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_python_implementation != 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "torch", version = "2.2.0+cu118", source = { registry = "https://download.pytorch.org/whl/cu118" }, marker = "extra == 'extra-15-openvla-runtime-cu118'" },
-    { name = "torchvision", version = "0.17.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "torchvision", version = "0.17.0", source = { registry = "https://download.pytorch.org/whl/cu118" }, marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "torchvision", version = "0.17.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118')" },
-    { name = "torchvision", version = "0.17.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_python_implementation != 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "torchvision", version = "0.17.0+cu118", source = { registry = "https://download.pytorch.org/whl/cu118" }, marker = "(platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
+    { name = "torch" },
+    { name = "torchvision", version = "0.17.0", source = { registry = "https://download.pytorch.org/whl/cu118" }, marker = "platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux'" },
+    { name = "torchvision", version = "0.17.0+cu118", source = { registry = "https://download.pytorch.org/whl/cu118" }, marker = "platform_machine != 'aarch64' or platform_python_implementation != 'CPython' or sys_platform != 'linux'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/c8/fd/742a9b4f4a896cef7f066dd8b146bf5682317261f0b71bab2b35928a98bd/timm-0.9.10.tar.gz", hash = "sha256:581dacc867398327ab2f77470fae6eee09a0c5d1d838bd9bced21ce0057edfd9", size = 2126590, upload-time = "2023-11-04T15:17:28.77Z" }
 wheels = [
@@ -982,103 +858,27 @@ wheels = [
 
 [[package]]
 name = "torch"
-version = "2.2.0"
-source = { registry = "https://download.pytorch.org/whl/cpu" }
-resolution-markers = [
-    "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux') or sys_platform == 'darwin'",
-]
-dependencies = [
-    { name = "filelock", marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "fsspec", marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "jinja2", marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "networkx", marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "sympy", marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "typing-extensions", marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-]
-wheels = [
-    { url = "https://download.pytorch.org/whl/cpu/torch-2.2.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:19e89763bdd9df0bf5e39462e9410c612a7a46aff72ea285b97929ac2045123f" },
-    { url = "https://download.pytorch.org/whl/cpu/torch-2.2.0-cp310-none-macosx_10_9_x86_64.whl", hash = "sha256:531e188a1a5e2d5cea3d7f9b6eabe25f0393f64e664c98f6e8b21875f2054f93" },
-    { url = "https://download.pytorch.org/whl/cpu/torch-2.2.0-cp310-none-macosx_11_0_arm64.whl", hash = "sha256:900a54217d9b50fd112155ced75f89081f23c85aa598b5fe03c9e0da00e53927" },
-]
-
-[[package]]
-name = "torch"
-version = "2.2.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "filelock", marker = "(extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118')" },
-    { name = "fsspec", marker = "(extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118')" },
-    { name = "jinja2", marker = "(extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118')" },
-    { name = "networkx", marker = "(extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-cublas-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118') or (extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-cuda-cupti-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118') or (extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-cuda-nvrtc-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118') or (extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-cuda-runtime-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118') or (extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-cudnn-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118') or (extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-cufft-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118') or (extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-curand-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118') or (extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-cusolver-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118') or (extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-cusparse-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118') or (extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-nccl-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118') or (extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-nvtx-cu12", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118') or (extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "sympy", marker = "(extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118')" },
-    { name = "typing-extensions", marker = "(extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118')" },
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/8c/67/fcc9b9e2369a9bae4da492aedc0c2dfa95d563ef0eaa9228b70c98395ec2/torch-2.2.0-cp310-cp310-manylinux1_x86_64.whl", hash = "sha256:d366158d6503a3447e67f8c0ad1328d54e6c181d88572d688a625fac61b13a97", size = 755505538, upload-time = "2024-01-30T17:30:06.596Z" },
-    { url = "https://files.pythonhosted.org/packages/2a/2a/b6064e03a71d2dc4936975c667703f333ce663977ce489b50090daee332f/torch-2.2.0-cp310-cp310-manylinux2014_aarch64.whl", hash = "sha256:707f2f80402981e9f90d0038d7d481678586251e6642a7a6ef67fc93511cb446", size = 86592741, upload-time = "2024-01-30T17:32:48.847Z" },
-    { url = "https://files.pythonhosted.org/packages/c8/ed/f11e9eb1e21d7ea8fc82a9fd373f9ff2023a7ee9e47d07c9bc9efce46eca/torch-2.2.0-cp310-cp310-win_amd64.whl", hash = "sha256:15c8f0a105c66b28496092fca1520346082e734095f8eaf47b5786bac24b8a31", size = 198565666, upload-time = "2024-01-30T17:32:56.079Z" },
-    { url = "https://files.pythonhosted.org/packages/e7/0a/e42e6012b710e49bc56b4e6ce501fa39baa46fd978de014244aae108e6e1/torch-2.2.0-cp310-none-macosx_10_9_x86_64.whl", hash = "sha256:0ca4df4b728515ad009b79f5107b00bcb2c63dc202d991412b9eb3b6a4f24349", size = 150796203, upload-time = "2024-01-30T17:32:42.109Z" },
-    { url = "https://files.pythonhosted.org/packages/6c/b6/18f8b358cab98a048b07cc049e1692231656fe2572443f2b4f56e75a8151/torch-2.2.0-cp310-none-macosx_11_0_arm64.whl", hash = "sha256:3d3eea2d5969b9a1c9401429ca79efc668120314d443d3463edc3289d7f003c7", size = 59699382, upload-time = "2024-01-30T17:32:26.767Z" },
-]
-
-[[package]]
-name = "torch"
-version = "2.2.0+cpu"
-source = { registry = "https://download.pytorch.org/whl/cpu" }
-resolution-markers = [
-    "(platform_machine != 'aarch64' and sys_platform == 'linux') or (platform_python_implementation != 'CPython' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')",
-]
-dependencies = [
-    { name = "filelock", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_python_implementation != 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "fsspec", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_python_implementation != 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "jinja2", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_python_implementation != 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "networkx", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_python_implementation != 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "sympy", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_python_implementation != 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "typing-extensions", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_python_implementation != 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-]
-wheels = [
-    { url = "https://download.pytorch.org/whl/cpu/torch-2.2.0%2Bcpu-cp310-cp310-linux_x86_64.whl", hash = "sha256:5f907293f5a58619c1c520380f17641f76400a136474a4b1a66c363d2563fe5e" },
-    { url = "https://download.pytorch.org/whl/cpu/torch-2.2.0%2Bcpu-cp310-cp310-win_amd64.whl", hash = "sha256:15a657038eea92ac5db6ab97b30bd4b5345741b49553b2a7e552e80001297124" },
-]
-
-[[package]]
-name = "torch"
 version = "2.2.0+cu118"
 source = { registry = "https://download.pytorch.org/whl/cu118" }
-resolution-markers = [
-    "platform_machine != 'aarch64' or platform_python_implementation != 'CPython' or sys_platform != 'linux'",
-    "platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux'",
-]
 dependencies = [
-    { name = "filelock", marker = "extra == 'extra-15-openvla-runtime-cu118'" },
-    { name = "fsspec", marker = "extra == 'extra-15-openvla-runtime-cu118'" },
-    { name = "jinja2", marker = "extra == 'extra-15-openvla-runtime-cu118'" },
-    { name = "networkx", marker = "extra == 'extra-15-openvla-runtime-cu118'" },
-    { name = "nvidia-cublas-cu11", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (platform_machine != 'x86_64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-cuda-cupti-cu11", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (platform_machine != 'x86_64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-cuda-nvrtc-cu11", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (platform_machine != 'x86_64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-cuda-runtime-cu11", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (platform_machine != 'x86_64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-cudnn-cu11", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (platform_machine != 'x86_64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-cufft-cu11", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (platform_machine != 'x86_64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-curand-cu11", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (platform_machine != 'x86_64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-cusolver-cu11", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (platform_machine != 'x86_64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-cusparse-cu11", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (platform_machine != 'x86_64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-nccl-cu11", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (platform_machine != 'x86_64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "nvidia-nvtx-cu11", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (platform_machine != 'x86_64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "sympy", marker = "extra == 'extra-15-openvla-runtime-cu118'" },
-    { name = "triton", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (platform_machine != 'x86_64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "typing-extensions", marker = "extra == 'extra-15-openvla-runtime-cu118'" },
+    { name = "filelock" },
+    { name = "fsspec" },
+    { name = "jinja2" },
+    { name = "networkx" },
+    { name = "nvidia-cublas-cu11", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cuda-cupti-cu11", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cuda-nvrtc-cu11", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cuda-runtime-cu11", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cudnn-cu11", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cufft-cu11", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-curand-cu11", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cusolver-cu11", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cusparse-cu11", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-nccl-cu11", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-nvtx-cu11", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "sympy" },
+    { name = "triton", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "typing-extensions" },
 ]
 wheels = [
     { url = "https://download.pytorch.org/whl/cu118/torch-2.2.0%2Bcu118-cp310-cp310-linux_x86_64.whl", hash = "sha256:4377e0a7fe8ff8ffc4f7c9c6130c1dcd3874050ae4fc28b7ff1d35234fbca423" },
@@ -1088,73 +888,18 @@ wheels = [
 [[package]]
 name = "torchvision"
 version = "0.17.0"
-source = { registry = "https://download.pytorch.org/whl/cpu" }
-resolution-markers = [
-    "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux') or sys_platform == 'darwin'",
-]
-dependencies = [
-    { name = "numpy", marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "pillow", marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "requests", marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "torch", version = "2.2.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-]
-wheels = [
-    { url = "https://download.pytorch.org/whl/torchvision-0.17.0-cp310-cp310-linux_aarch64.whl", hash = "sha256:3d86c212fc6379e9bec3ac647d062e34c2cf36c26b98840b66573eb9fbe1f1d9" },
-    { url = "https://download.pytorch.org/whl/cpu/torchvision-0.17.0-cp310-cp310-macosx_10_13_x86_64.whl", hash = "sha256:153882cd8ff8e3dbef5c5054fdd15df64e85420546805a90c0b2221f2f119c4a" },
-    { url = "https://download.pytorch.org/whl/cpu/torchvision-0.17.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:c55c2f86e3f3a21ddd92739a972366244e9b17916e836ec47167b0a0c083c65f" },
-]
-
-[[package]]
-name = "torchvision"
-version = "0.17.0"
 source = { registry = "https://download.pytorch.org/whl/cu118" }
 resolution-markers = [
     "platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux'",
 ]
 dependencies = [
-    { name = "numpy", marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "pillow", marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "requests", marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "torch", version = "2.2.0+cu118", source = { registry = "https://download.pytorch.org/whl/cu118" }, marker = "(platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
+    { name = "numpy", marker = "platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux'" },
+    { name = "pillow", marker = "platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux'" },
+    { name = "requests", marker = "platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux'" },
+    { name = "torch", marker = "platform_machine == 'aarch64' and platform_python_implementation == 'CPython' and sys_platform == 'linux'" },
 ]
 wheels = [
     { url = "https://download.pytorch.org/whl/torchvision-0.17.0-cp310-cp310-linux_aarch64.whl", hash = "sha256:3d86c212fc6379e9bec3ac647d062e34c2cf36c26b98840b66573eb9fbe1f1d9" },
-]
-
-[[package]]
-name = "torchvision"
-version = "0.17.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "numpy", marker = "(extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118')" },
-    { name = "pillow", marker = "(extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118')" },
-    { name = "requests", marker = "(extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118')" },
-    { name = "torch", version = "2.2.0", source = { registry = "https://pypi.org/simple" }, marker = "(extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (extra != 'extra-15-openvla-runtime-cpu' and extra != 'extra-15-openvla-runtime-cu118')" },
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/99/da/dedf05fab34a0ef38abc20b8a86b836a486fdef774641812fe556db8ef5a/torchvision-0.17.0-cp310-cp310-macosx_10_13_x86_64.whl", hash = "sha256:153882cd8ff8e3dbef5c5054fdd15df64e85420546805a90c0b2221f2f119c4a", size = 1667125, upload-time = "2024-01-30T17:34:04.735Z" },
-    { url = "https://files.pythonhosted.org/packages/95/f5/5f3f013ddb3eb8561d3313fd5a5951e5883aff4aba8398ad93d1b183a214/torchvision-0.17.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:c55c2f86e3f3a21ddd92739a972366244e9b17916e836ec47167b0a0c083c65f", size = 1571848, upload-time = "2024-01-30T17:34:10.127Z" },
-    { url = "https://files.pythonhosted.org/packages/d8/51/55393d57c2d95311b1675c8cd37d307f5022460cf98746e4df882dfb415c/torchvision-0.17.0-cp310-cp310-manylinux1_x86_64.whl", hash = "sha256:605950cdcefe6c5aef85709ade17b1525bcf171e122cce1df09e666d96525b90", size = 6916370, upload-time = "2024-01-30T17:33:54.665Z" },
-    { url = "https://files.pythonhosted.org/packages/4f/fd/c02da47623d870a53007f4628f69787cbe62a50fcedc3327d03d5951ae5c/torchvision-0.17.0-cp310-cp310-manylinux2014_aarch64.whl", hash = "sha256:3d86c212fc6379e9bec3ac647d062e34c2cf36c26b98840b66573eb9fbe1f1d9", size = 14011345, upload-time = "2024-01-30T17:33:42.49Z" },
-    { url = "https://files.pythonhosted.org/packages/7f/c9/10ca7837d786f2a96328ddf3a93767897d5e6eb04cf42b043778a771d04a/torchvision-0.17.0-cp310-cp310-win_amd64.whl", hash = "sha256:71b314813faf13cecb09a4a635b5e4b274e8df0b1921681038d491c529555bb6", size = 1166258, upload-time = "2024-01-30T17:34:06.536Z" },
-]
-
-[[package]]
-name = "torchvision"
-version = "0.17.0+cpu"
-source = { registry = "https://download.pytorch.org/whl/cpu" }
-resolution-markers = [
-    "(platform_machine != 'aarch64' and sys_platform == 'linux') or (platform_python_implementation != 'CPython' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')",
-]
-dependencies = [
-    { name = "numpy", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_python_implementation != 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "pillow", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_python_implementation != 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "requests", marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_python_implementation != 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "torch", version = "2.2.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (platform_python_implementation != 'CPython' and sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform != 'darwin' and sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cpu') or (sys_platform == 'darwin' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'linux' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-]
-wheels = [
-    { url = "https://download.pytorch.org/whl/cpu/torchvision-0.17.0%2Bcpu-cp310-cp310-linux_x86_64.whl", hash = "sha256:00e88e9483e52f99fc61a73941b6ef0b59d031930276fc220ee8973170f305ff" },
-    { url = "https://download.pytorch.org/whl/cpu/torchvision-0.17.0%2Bcpu-cp310-cp310-win_amd64.whl", hash = "sha256:569ebc5f47bb765ae73cd380ace01ddcb074c67df05d7f15f5ddd0fa3062881a" },
 ]
 
 [[package]]
@@ -1165,10 +910,10 @@ resolution-markers = [
     "platform_machine != 'aarch64' or platform_python_implementation != 'CPython' or sys_platform != 'linux'",
 ]
 dependencies = [
-    { name = "numpy", marker = "(platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "pillow", marker = "(platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "requests", marker = "(platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
-    { name = "torch", version = "2.2.0+cu118", source = { registry = "https://download.pytorch.org/whl/cu118" }, marker = "(platform_machine != 'aarch64' and extra == 'extra-15-openvla-runtime-cu118') or (platform_python_implementation != 'CPython' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform != 'linux' and extra == 'extra-15-openvla-runtime-cu118') or (extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
+    { name = "numpy", marker = "platform_machine != 'aarch64' or platform_python_implementation != 'CPython' or sys_platform != 'linux'" },
+    { name = "pillow", marker = "platform_machine != 'aarch64' or platform_python_implementation != 'CPython' or sys_platform != 'linux'" },
+    { name = "requests", marker = "platform_machine != 'aarch64' or platform_python_implementation != 'CPython' or sys_platform != 'linux'" },
+    { name = "torch", marker = "platform_machine != 'aarch64' or platform_python_implementation != 'CPython' or sys_platform != 'linux'" },
 ]
 wheels = [
     { url = "https://download.pytorch.org/whl/cu118/torchvision-0.17.0%2Bcu118-cp310-cp310-linux_x86_64.whl", hash = "sha256:2e63d62e09d9b48b407d3e1b30eb8ae4e3abad6968e8d33093b60d0657542428" },
@@ -1180,7 +925,7 @@ name = "tqdm"
 version = "4.67.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32' or (extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/09/a9/6ba95a270c6f1fbcd8dac228323f2777d886cb206987444e4bce66338dd4/tqdm-4.67.3.tar.gz", hash = "sha256:7d825f03f89244ef73f1d4ce193cb1774a8179fd96f31d7e1dcde62092b960bb", size = 169598, upload-time = "2026-02-03T17:35:53.048Z" }
 wheels = [
@@ -1213,7 +958,7 @@ name = "triton"
 version = "2.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "filelock", marker = "extra == 'extra-15-openvla-runtime-cu118'" },
+    { name = "filelock" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/95/05/ed974ce87fe8c8843855daa2136b3409ee1c126707ab54a8b72815c08b49/triton-2.2.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a2294514340cfe4e8f4f9e5c66c702744c4a117d25e618bd08469d0bfed1e2e5", size = 167900779, upload-time = "2024-01-10T03:11:56.576Z" },
@@ -1265,11 +1010,11 @@ wheels = [
 
 [package.optional-dependencies]
 standard = [
-    { name = "colorama", marker = "sys_platform == 'win32' or (extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
     { name = "httptools" },
     { name = "python-dotenv" },
     { name = "pyyaml" },
-    { name = "uvloop", marker = "(platform_python_implementation != 'PyPy' and sys_platform != 'cygwin' and sys_platform != 'win32') or (platform_python_implementation == 'PyPy' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'cygwin' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118') or (sys_platform == 'win32' and extra == 'extra-15-openvla-runtime-cpu' and extra == 'extra-15-openvla-runtime-cu118')" },
+    { name = "uvloop", marker = "platform_python_implementation != 'PyPy' and sys_platform != 'cygwin' and sys_platform != 'win32'" },
     { name = "watchfiles" },
     { name = "websockets" },
 ]

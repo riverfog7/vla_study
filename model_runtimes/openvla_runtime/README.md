@@ -2,12 +2,18 @@
 
 Minimal remote inference runtime for OpenVLA.
 
-Typical setup on the remote GPU host:
+Standard workflow on the remote GPU host:
 
 ```bash
-uv sync --extra cu118
-uv run openvla-runtime-server
+./configure.sh
+./start.sh
 ```
+
+`configure.sh` installs `uv` if needed and recreates `.venv` with `uv sync --frozen`.
+
+`start.sh` is blocking and starts the runtime with `uv run openvla-runtime-server`.
+
+By default, `start.sh` enables `flash_attention_2`. If you need to override anything, export environment variables before launching the script.
 
 Environment variables:
 
@@ -18,6 +24,7 @@ Environment variables:
 - `OPENVLA_RUNTIME_TORCH_DTYPE`
 - `OPENVLA_RUNTIME_ATTN_IMPLEMENTATION`
 - `OPENVLA_RUNTIME_DEFAULT_UNNORM_KEY`
+- `OPENVLA_RUNTIME_LOAD_ON_STARTUP`
 
 Endpoints:
 
