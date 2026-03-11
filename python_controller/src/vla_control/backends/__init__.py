@@ -5,6 +5,11 @@ from vla_control.backends.dummy_policy import (
     DummyRawAction,
 )
 from vla_control.backends.openvla_rest_backend import (
+    OpenVLABackendError,
+    OpenVLAHealthResponse,
+    OpenVLAProtocolError,
+    OpenVLAReadyResponse,
+    OpenVLARemoteUnavailableError,
     OpenVLARestBackend,
     OpenVLARestBackendConfig,
 )
@@ -13,6 +18,11 @@ __all__ = [
     "DummyPolicy",
     "DummyPolicyConfig",
     "DummyRawAction",
+    "OpenVLABackendError",
+    "OpenVLAHealthResponse",
+    "OpenVLAProtocolError",
+    "OpenVLAReadyResponse",
+    "OpenVLARemoteUnavailableError",
     "OpenVLARestBackend",
     "OpenVLARestBackendConfig",
     "PolicyBackend",

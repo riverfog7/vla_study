@@ -72,6 +72,46 @@ summary = runner.run_rollout(
 summary.status, summary.total_steps
 ```
 
+## OpenVLA workflow
+
+Single-step sanity check against a hosted OpenVLA runtime:
+
+```python
+from vla_control import UnityClient, create_openvla_backend, run_openvla_single_step_check
+
+client = UnityClient()
+backend = create_openvla_backend(
+    base_url="http://your-openvla-host:8000",
+    unnorm_key="bridge_orig",
+    timeout_seconds=300.0,
+)
+
+result = run_openvla_single_step_check(client, backend)
+result.pose_command
+```
+
+Short rollout with the current xyz-only OpenVLA adapter path:
+
+```python
+from vla_control import UnityClient, create_openvla_backend, run_openvla_rollout
+
+client = UnityClient()
+backend = create_openvla_backend(
+    base_url="http://your-openvla-host:8000",
+    unnorm_key="bridge_orig",
+    timeout_seconds=300.0,
+)
+
+summary = run_openvla_rollout(client, backend)
+summary.status, summary.total_steps
+```
+
+Current OpenVLA behavior:
+
+- `xyz` translation is applied
+- gripper is applied
+- rotation deltas are logged but not yet sent to Unity
+
 ## CLI smoke test
 
 ```bash
@@ -80,6 +120,14 @@ uv run python main.py smoke --save-dir artifacts/smoke
 
 ```bash
 uv run python main.py dummy-rollout --instruction "move the proxy toward the dummy goal" --max-steps 6 --save-dir artifacts/dummy-rollout
+```
+
+```bash
+uv run python main.py openvla-check --openvla-url http://your-openvla-host:8000 --unnorm-key bridge_orig
+```
+
+```bash
+uv run python main.py openvla-rollout --openvla-url http://your-openvla-host:8000 --unnorm-key bridge_orig --max-steps 3 --save-dir artifacts/openvla_first_rollout
 ```
 
 This runs:

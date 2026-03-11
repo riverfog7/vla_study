@@ -236,3 +236,14 @@ class OpenVLARestBackend(PolicyBackend):
         return OpenVLABackendError(
             f"OpenVLA runtime returned HTTP {exc.code}: {decoded or 'no response body'}"
         )
+
+
+__all__ = [
+    "OpenVLABackendError",
+    "OpenVLAHealthResponse",
+    "OpenVLAProtocolError",
+    "OpenVLAReadyResponse",
+    "OpenVLARemoteUnavailableError",
+    "OpenVLARestBackend",
+    "OpenVLARestBackendConfig",
+]
