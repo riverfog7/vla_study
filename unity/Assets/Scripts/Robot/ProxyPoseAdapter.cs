@@ -21,6 +21,8 @@ namespace VlaStudy.UnityHarness.Robot
         private Vector3 _targetPosition;
         private Quaternion _targetRotation;
         private float _targetGripper;
+        private ProxyGripperVisualController _gripperVisualController;
+        private Rigidbody _proxyRigidbody;
         private int _lastAcceptedCommandId;
         private bool _lastCommandWasClipped;
         private bool _hasActiveTarget;
@@ -34,6 +36,8 @@ namespace VlaStudy.UnityHarness.Robot
             _proxyTransform = proxyTransform;
             _homePosition = homePosition;
             _homeRotation = homeRotation;
+            _gripperVisualController = _proxyTransform != null ? _proxyTransform.GetComponent<ProxyGripperVisualController>() : null;
+            _proxyRigidbody = _proxyTransform != null ? _proxyTransform.GetComponent<Rigidbody>() : null;
             SetCurrentPoseImmediate(homePosition, homeRotation, 0f);
         }
 
@@ -124,10 +128,22 @@ namespace VlaStudy.UnityHarness.Robot
             var linearStep = maxLinearSpeedMetersPerSecond * resolvedDt;
             var angularStep = maxAngularSpeedDegreesPerSecond * resolvedDt;
             var gripperStep = maxGripperSpeedPerSecond * resolvedDt;
+            var nextPosition = Vector3.MoveTowards(_proxyTransform.position, _targetPosition, linearStep);
+            var nextRotation = Quaternion.RotateTowards(_proxyTransform.rotation, _targetRotation, angularStep);
 
-            _proxyTransform.position = Vector3.MoveTowards(_proxyTransform.position, _targetPosition, linearStep);
-            _proxyTransform.rotation = Quaternion.RotateTowards(_proxyTransform.rotation, _targetRotation, angularStep);
+            if (_proxyRigidbody != null && _proxyRigidbody.isKinematic)
+            {
+                _proxyRigidbody.MovePosition(nextPosition);
+                _proxyRigidbody.MoveRotation(nextRotation);
+            }
+            else
+            {
+                _proxyTransform.position = nextPosition;
+                _proxyTransform.rotation = nextRotation;
+            }
+
             _currentGripper = Mathf.MoveTowards(_currentGripper, _targetGripper, gripperStep);
+            _gripperVisualController?.SetGripper(_currentGripper);
 
             if (!HasReachedTarget())
             {
@@ -154,9 +170,24 @@ namespace VlaStudy.UnityHarness.Robot
                 return;
             }
 
-            _proxyTransform.position = position;
-            _proxyTransform.rotation = rotation;
+            if (_proxyRigidbody != null)
+            {
+                _proxyRigidbody.position = position;
+                _proxyRigidbody.rotation = rotation;
+                if (!_proxyRigidbody.isKinematic)
+                {
+                    _proxyRigidbody.linearVelocity = Vector3.zero;
+                    _proxyRigidbody.angularVelocity = Vector3.zero;
+                }
+            }
+            else
+            {
+                _proxyTransform.position = position;
+                _proxyTransform.rotation = rotation;
+            }
+
             _currentGripper = Mathf.Clamp01(gripper);
+            _gripperVisualController?.SetGripper(_currentGripper);
             _targetPosition = position;
             _targetRotation = rotation;
             _targetGripper = _currentGripper;

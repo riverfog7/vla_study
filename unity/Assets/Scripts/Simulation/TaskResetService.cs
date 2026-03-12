@@ -94,9 +94,14 @@ namespace VlaStudy.UnityHarness.Simulation
                 _rigidbody.isKinematic = true;
                 _rigidbody.position = _position;
                 _rigidbody.rotation = _rotation;
-                _rigidbody.linearVelocity = _linearVelocity;
-                _rigidbody.angularVelocity = _angularVelocity;
                 _rigidbody.isKinematic = _isKinematic;
+
+                if (!_isKinematic)
+                {
+                    _rigidbody.linearVelocity = _linearVelocity;
+                    _rigidbody.angularVelocity = _angularVelocity;
+                }
+
                 _rigidbody.Sleep();
             }
         }

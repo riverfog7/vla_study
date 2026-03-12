@@ -72,8 +72,7 @@ namespace VlaStudy.UnityHarness.Bootstrap
                 return;
             }
 
-            Debug.Log(
-                $"Harness ready: http://{httpApiServer.Host}:{httpApiServer.Port}/v1/ | physics_dt={simulationController.PhysicsDt:0.###} | policy_period={simulationController.PolicyPeriodSeconds:0.###} | steps_per_action={simulationController.StepsPerAction} | cameras={string.Join(",", GetCameraNames())}");
+            Debug.Log($"Harness ready: http://{httpApiServer.Host}:{httpApiServer.Port}/v1/ | physics_dt={simulationController.PhysicsDt:0.###} | policy_period={simulationController.PolicyPeriodSeconds:0.###} | steps_per_action={simulationController.StepsPerAction} | cameras={string.Join(",", GetCameraNames())}");
         }
 
         private void AutoAssignReferences()
@@ -130,7 +129,6 @@ namespace VlaStudy.UnityHarness.Bootstrap
                     continue;
                 }
 
-                cameraDefinition.camera.enabled = cameraDefinition.enabled;
                 var descriptor = new RegisteredCameraDescriptor
                 {
                     CameraName = cameraDefinition.cameraName,
@@ -141,7 +139,6 @@ namespace VlaStudy.UnityHarness.Bootstrap
                     LocalRotationEuler = cameraDefinition.localRotationEuler,
                     TemplateCameraName = cameraDefinition.cameraName,
                 };
-                cameraMountService.ApplyAuthoredCameraMount(descriptor);
                 cameraRegistry.RegisterAuthored(descriptor);
             }
         }

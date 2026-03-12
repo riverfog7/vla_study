@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -11,7 +12,6 @@ using VlaStudy.UnityHarness.Simulation;
 
 namespace VlaStudy.UnityHarness.EditorTools
 {
-    [InitializeOnLoad]
     public static class HarnessSceneAuthoring
     {
         private const string ScenePath = "Assets/Scenes/Main.unity";
@@ -21,16 +21,6 @@ namespace VlaStudy.UnityHarness.EditorTools
         private const string ProxyName = "ProxyEndEffector";
         private const string ProxyCameraMountName = "ProxyCameraMount";
         private const string CameraName = "Main Camera";
-        private const string LightName = "Directional Light";
-
-        private static bool _autoRefreshPending = true;
-
-        static HarnessSceneAuthoring()
-        {
-            EditorApplication.delayCall += TryAutoRefreshMainScene;
-            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-            EditorSceneManager.sceneOpened += OnSceneOpened;
-        }
 
         [MenuItem("Tools/VLA/Refresh Main Scene")]
         public static void RefreshMainSceneMenuItem()
@@ -49,44 +39,10 @@ namespace VlaStudy.UnityHarness.EditorTools
             RefreshMainScene(forceWhenDirty: true);
         }
 
-        private static void OnPlayModeStateChanged(PlayModeStateChange stateChange)
-        {
-            if (stateChange != PlayModeStateChange.EnteredEditMode)
-            {
-                return;
-            }
-
-            _autoRefreshPending = true;
-            EditorApplication.delayCall += TryAutoRefreshMainScene;
-        }
-
-        private static void OnSceneOpened(Scene scene, OpenSceneMode mode)
-        {
-            if (scene.path != ScenePath)
-            {
-                return;
-            }
-
-            _autoRefreshPending = true;
-            EditorApplication.delayCall += TryAutoRefreshMainScene;
-        }
-
-        private static void TryAutoRefreshMainScene()
-        {
-            if (!_autoRefreshPending)
-            {
-                return;
-            }
-
-            _autoRefreshPending = false;
-            RefreshMainScene(forceWhenDirty: false);
-        }
-
         private static void RefreshMainScene(bool forceWhenDirty)
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode || EditorApplication.isCompiling || BuildPipeline.isBuildingPlayer)
             {
-                _autoRefreshPending = true;
                 return;
             }
 
@@ -96,20 +52,19 @@ namespace VlaStudy.UnityHarness.EditorTools
                 return;
             }
 
-            var existingRoot = GameObject.Find(RootName);
-            var existingSceneReferences = Object.FindFirstObjectByType<HarnessSceneReferences>();
-            var needsInitialAuthoring = existingSceneReferences == null ||
-                                        !existingSceneReferences.IsConfigured() ||
-                                        SceneRootNeedsComponents(existingRoot);
-
-            if (activeScene.isDirty && !forceWhenDirty && !needsInitialAuthoring)
+            if (activeScene.isDirty && !forceWhenDirty)
             {
-                _autoRefreshPending = true;
                 return;
             }
 
             var changed = false;
-            var root = GetOrCreateGameObject(RootName, ref changed);
+            var root = GameObject.Find(RootName);
+            if (root == null)
+            {
+                root = new GameObject(RootName);
+                changed = true;
+            }
+
             var sceneReferences = GetOrAddComponent<HarnessSceneReferences>(root, ref changed);
             GetOrAddComponent<ControlTimingConfig>(root, ref changed);
             GetOrAddComponent<MainThreadDispatcher>(root, ref changed);
@@ -125,68 +80,25 @@ namespace VlaStudy.UnityHarness.EditorTools
             GetOrAddComponent<HarnessSceneBootstrap>(root, ref changed);
             GetOrAddComponent<HarnessOperatorConsole>(root, ref changed);
 
-            var workspaceMaterial = EnsureMaterialAsset("Assets/Materials/WorkspaceTable.mat", new Color(0.55f, 0.55f, 0.58f), ref changed);
-            var targetMaterial = EnsureMaterialAsset("Assets/Materials/TargetObject.mat", new Color(0.82f, 0.34f, 0.24f), ref changed);
-            var proxyMaterial = EnsureMaterialAsset("Assets/Materials/ProxyEndEffector.mat", new Color(0.16f, 0.54f, 0.86f), ref changed);
+            var workspace = GameObject.Find(WorkspaceName)?.transform;
+            var target = GameObject.Find(TargetName)?.transform;
+            var proxy = GameObject.Find(ProxyName)?.transform;
+            var proxyCameraMount = proxy != null ? proxy.Find(ProxyCameraMountName) : null;
+            var mainCamera = GameObject.Find(CameraName)?.GetComponent<UnityEngine.Camera>() ?? UnityEngine.Camera.main;
 
-            var workspace = EnsurePrimitive(
-                WorkspaceName,
-                PrimitiveType.Cube,
-                new Vector3(0f, 0.5f, 0f),
-                new Vector3(1.5f, 0.1f, 1.5f),
-                workspaceMaterial,
-                ref changed);
+            var missing = new List<string>();
+            if (workspace == null) missing.Add(WorkspaceName);
+            if (target == null) missing.Add(TargetName);
+            if (proxy == null) missing.Add(ProxyName);
+            if (proxyCameraMount == null) missing.Add(ProxyCameraMountName);
+            if (mainCamera == null) missing.Add(CameraName);
 
-            var target = EnsurePrimitive(
-                TargetName,
-                PrimitiveType.Sphere,
-                new Vector3(0.3f, 0.65f, 0.2f),
-                Vector3.one * 0.18f,
-                targetMaterial,
-                ref changed);
-
-            var proxy = EnsurePrimitive(
-                ProxyName,
-                PrimitiveType.Cube,
-                new Vector3(0f, 0.85f, 0f),
-                new Vector3(0.12f, 0.12f, 0.12f),
-                proxyMaterial,
-                ref changed);
-            var proxyCameraMount = EnsureChildGameObject(proxy.transform, ProxyCameraMountName, Vector3.zero, Quaternion.identity, Vector3.one, ref changed);
-
-            var mainCamera = EnsureMainCamera(workspace.transform, ref changed);
-            EnsureDirectionalLight(ref changed);
-
-            if (ApplySceneReferences(sceneReferences, workspace.transform, target.transform, proxy.transform, proxyCameraMount.transform, mainCamera))
+            if (missing.Count > 0)
             {
-                changed = true;
-                EditorUtility.SetDirty(sceneReferences);
-            }
-
-            if (!changed)
-            {
+                Debug.LogError($"Refresh Main Scene aborted. Missing required scene objects: {string.Join(", ", missing)}");
                 return;
             }
 
-            EditorSceneManager.MarkSceneDirty(activeScene);
-            AssetDatabase.SaveAssets();
-            EditorSceneManager.SaveScene(activeScene);
-        }
-
-        private static bool ApplySceneReferences(
-            HarnessSceneReferences sceneReferences,
-            Transform workspace,
-            Transform target,
-            Transform proxy,
-            Transform proxyCameraMount,
-            UnityEngine.Camera mainCamera)
-        {
-            if (sceneReferences == null)
-            {
-                return false;
-            }
-
-            var changed = false;
             if (sceneReferences.WorkspaceTable != workspace ||
                 sceneReferences.TargetObject != target ||
                 sceneReferences.ProxyEndEffector != proxy ||
@@ -196,20 +108,20 @@ namespace VlaStudy.UnityHarness.EditorTools
                 changed = true;
             }
 
-            changed |= sceneReferences.EnsureCameraDefinition("main", mainCamera, enabled: true);
-            return changed;
-        }
-
-        private static GameObject GetOrCreateGameObject(string name, ref bool changed)
-        {
-            var gameObject = GameObject.Find(name);
-            if (gameObject != null)
+            if (sceneReferences.EnsureCameraDefinition("main", mainCamera, enabled: mainCamera.enabled))
             {
-                return gameObject;
+                changed = true;
             }
 
-            changed = true;
-            return new GameObject(name);
+            if (!changed)
+            {
+                return;
+            }
+
+            EditorUtility.SetDirty(sceneReferences);
+            EditorSceneManager.MarkSceneDirty(activeScene);
+            AssetDatabase.SaveAssets();
+            EditorSceneManager.SaveScene(activeScene);
         }
 
         private static T GetOrAddComponent<T>(GameObject gameObject, ref bool changed) where T : Component
@@ -222,202 +134,6 @@ namespace VlaStudy.UnityHarness.EditorTools
 
             changed = true;
             return gameObject.AddComponent<T>();
-        }
-
-        private static GameObject EnsureChildGameObject(Transform parent, string name, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, ref bool changed)
-        {
-            var child = parent.Find(name);
-            if (child == null)
-            {
-                var childObject = new GameObject(name);
-                childObject.transform.SetParent(parent, false);
-                child = childObject.transform;
-                changed = true;
-            }
-
-            if (ApplyTransform(child, localPosition, localRotation, localScale))
-            {
-                changed = true;
-            }
-
-            return child.gameObject;
-        }
-
-        private static bool SceneRootNeedsComponents(GameObject root)
-        {
-            if (root == null)
-            {
-                return true;
-            }
-
-            return root.GetComponent<ControlTimingConfig>() == null ||
-                   root.GetComponent<MainThreadDispatcher>() == null ||
-                   root.GetComponent<SimulationController>() == null ||
-                   root.GetComponent<CameraRegistry>() == null ||
-                   root.GetComponent<CameraCaptureService>() == null ||
-                   root.GetComponent<CameraMountService>() == null ||
-                   root.GetComponent<RuntimeCameraService>() == null ||
-                   root.GetComponent<ProxyPoseAdapter>() == null ||
-                   root.GetComponent<SceneStateService>() == null ||
-                   root.GetComponent<TaskResetService>() == null ||
-                   root.GetComponent<HttpApiServer>() == null ||
-                   root.GetComponent<HarnessSceneBootstrap>() == null ||
-                   root.GetComponent<HarnessOperatorConsole>() == null;
-        }
-
-        private static GameObject EnsurePrimitive(string name, PrimitiveType primitiveType, Vector3 position, Vector3 scale, Material material, ref bool changed)
-        {
-            var gameObject = GameObject.Find(name);
-            if (gameObject == null)
-            {
-                gameObject = GameObject.CreatePrimitive(primitiveType);
-                gameObject.name = name;
-                changed = true;
-            }
-
-            if (ApplyTransform(gameObject.transform, position, Quaternion.identity, scale))
-            {
-                changed = true;
-            }
-
-            var renderer = gameObject.GetComponent<Renderer>();
-            if (renderer != null && renderer.sharedMaterial != material)
-            {
-                renderer.sharedMaterial = material;
-                changed = true;
-            }
-
-            return gameObject;
-        }
-
-        private static UnityEngine.Camera EnsureMainCamera(Transform lookTarget, ref bool changed)
-        {
-            var mainCamera = UnityEngine.Camera.main;
-            if (mainCamera == null)
-            {
-                var existing = GameObject.Find(CameraName);
-                if (existing != null)
-                {
-                    mainCamera = existing.GetComponent<UnityEngine.Camera>();
-                }
-            }
-
-            if (mainCamera == null)
-            {
-                var cameraObject = new GameObject(CameraName);
-                cameraObject.tag = "MainCamera";
-                mainCamera = cameraObject.AddComponent<UnityEngine.Camera>();
-                cameraObject.AddComponent<AudioListener>();
-                changed = true;
-            }
-
-            if (mainCamera.gameObject.name != CameraName)
-            {
-                mainCamera.gameObject.name = CameraName;
-                changed = true;
-            }
-
-            if (mainCamera.gameObject.tag != "MainCamera")
-            {
-                mainCamera.gameObject.tag = "MainCamera";
-                changed = true;
-            }
-
-            if (ApplyTransform(mainCamera.transform, new Vector3(1.6f, 1.3f, -1.6f), Quaternion.LookRotation((lookTarget.position + new Vector3(0f, 0.2f, 0f)) - new Vector3(1.6f, 1.3f, -1.6f)), Vector3.one))
-            {
-                changed = true;
-            }
-
-            if (mainCamera.clearFlags != CameraClearFlags.Skybox)
-            {
-                mainCamera.clearFlags = CameraClearFlags.Skybox;
-                changed = true;
-            }
-
-            return mainCamera;
-        }
-
-        private static void EnsureDirectionalLight(ref bool changed)
-        {
-            var light = Object.FindFirstObjectByType<Light>();
-            if (light == null || light.type != LightType.Directional)
-            {
-                var lightObject = GameObject.Find(LightName);
-                if (lightObject == null)
-                {
-                    lightObject = new GameObject(LightName);
-                    changed = true;
-                }
-
-                light = lightObject.GetComponent<Light>();
-                if (light == null)
-                {
-                    light = lightObject.AddComponent<Light>();
-                    changed = true;
-                }
-            }
-
-            if (light.gameObject.name != LightName)
-            {
-                light.gameObject.name = LightName;
-                changed = true;
-            }
-
-            if (light.type != LightType.Directional)
-            {
-                light.type = LightType.Directional;
-                changed = true;
-            }
-
-            if (ApplyTransform(light.transform, new Vector3(0f, 3f, 0f), Quaternion.Euler(50f, -30f, 0f), Vector3.one))
-            {
-                changed = true;
-            }
-        }
-
-        private static Material EnsureMaterialAsset(string path, Color color, ref bool changed)
-        {
-            var material = AssetDatabase.LoadAssetAtPath<Material>(path);
-            if (material == null)
-            {
-                material = new Material(Shader.Find("Standard"));
-                AssetDatabase.CreateAsset(material, path);
-                changed = true;
-            }
-
-            if (material.color != color)
-            {
-                material.color = color;
-                EditorUtility.SetDirty(material);
-                changed = true;
-            }
-
-            return material;
-        }
-
-        private static bool ApplyTransform(Transform transform, Vector3 position, Quaternion rotation, Vector3 scale)
-        {
-            var changed = false;
-
-            if (transform.localPosition != position)
-            {
-                transform.localPosition = position;
-                changed = true;
-            }
-
-            if (transform.localRotation != rotation)
-            {
-                transform.localRotation = rotation;
-                changed = true;
-            }
-
-            if (transform.localScale != scale)
-            {
-                transform.localScale = scale;
-                changed = true;
-            }
-
-            return changed;
         }
     }
 }
