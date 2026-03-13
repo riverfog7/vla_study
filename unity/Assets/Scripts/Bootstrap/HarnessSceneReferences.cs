@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VlaStudy.UnityHarness.Camera;
 
 namespace VlaStudy.UnityHarness.Bootstrap
@@ -9,31 +10,44 @@ namespace VlaStudy.UnityHarness.Bootstrap
     {
         [SerializeField] private Transform workspaceTable;
         [SerializeField] private Transform targetObject;
-        [SerializeField] private Transform proxyEndEffector;
-        [SerializeField] private Transform proxyCameraMount;
+        [FormerlySerializedAs("proxyEndEffector")]
+        [SerializeField] private Transform robotEndEffector;
+        [FormerlySerializedAs("proxyCameraMount")]
+        [SerializeField] private Transform robotCameraMount;
+        [SerializeField] private Transform robotBaseFrame;
         [SerializeField] private NamedCameraDefinition[] cameras = System.Array.Empty<NamedCameraDefinition>();
 
         public Transform WorkspaceTable => workspaceTable;
         public Transform TargetObject => targetObject;
-        public Transform ProxyEndEffector => proxyEndEffector;
-        public Transform ProxyCameraMount => proxyCameraMount;
+        public Transform RobotEndEffector => robotEndEffector;
+        public Transform RobotCameraMount => robotCameraMount;
+        public Transform RobotBaseFrame => robotBaseFrame;
+        public Transform ProxyEndEffector => robotEndEffector;
+        public Transform ProxyCameraMount => robotCameraMount;
         public IReadOnlyList<NamedCameraDefinition> Cameras => cameras;
 
         public bool IsConfigured()
         {
             return workspaceTable != null &&
                    targetObject != null &&
-                   proxyEndEffector != null &&
-                   proxyCameraMount != null &&
+                   robotEndEffector != null &&
+                   robotCameraMount != null &&
                    HasCameraNamed("main");
         }
 
-        public void ConfigureBaseReferences(Transform workspace, Transform target, Transform proxy, Transform cameraMount)
+        public void ConfigureBaseReferences(Transform workspace, Transform target, Transform endEffector, Transform cameraMount)
         {
             workspaceTable = workspace;
             targetObject = target;
-            proxyEndEffector = proxy;
-            proxyCameraMount = cameraMount;
+            robotEndEffector = endEffector;
+            robotCameraMount = cameraMount;
+        }
+
+        public void ConfigureRobotReferences(Transform baseFrame, Transform endEffector, Transform cameraMount)
+        {
+            robotBaseFrame = baseFrame;
+            robotEndEffector = endEffector;
+            robotCameraMount = cameraMount;
         }
 
         public bool EnsureCameraDefinition(string cameraName, UnityEngine.Camera cameraComponent, bool enabled, string mountTarget = "")

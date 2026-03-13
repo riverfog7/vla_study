@@ -74,6 +74,7 @@ namespace VlaStudy.UnityHarness.EditorTools
             GetOrAddComponent<CameraMountService>(root, ref changed);
             GetOrAddComponent<RuntimeCameraService>(root, ref changed);
             GetOrAddComponent<ProxyPoseAdapter>(root, ref changed);
+            GetOrAddComponent<ArticulatedRobotAdapter>(root, ref changed);
             GetOrAddComponent<SceneStateService>(root, ref changed);
             GetOrAddComponent<TaskResetService>(root, ref changed);
             GetOrAddComponent<HttpApiServer>(root, ref changed);
@@ -99,10 +100,11 @@ namespace VlaStudy.UnityHarness.EditorTools
                 return;
             }
 
-            if (sceneReferences.WorkspaceTable != workspace ||
-                sceneReferences.TargetObject != target ||
-                sceneReferences.ProxyEndEffector != proxy ||
-                sceneReferences.ProxyCameraMount != proxyCameraMount)
+            if (sceneReferences.RobotBaseFrame == null &&
+                (sceneReferences.WorkspaceTable != workspace ||
+                 sceneReferences.TargetObject != target ||
+                 sceneReferences.ProxyEndEffector != proxy ||
+                 sceneReferences.ProxyCameraMount != proxyCameraMount))
             {
                 sceneReferences.ConfigureBaseReferences(workspace, target, proxy, proxyCameraMount);
                 changed = true;

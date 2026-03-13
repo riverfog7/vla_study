@@ -29,8 +29,8 @@ namespace VlaStudy.UnityHarness.Camera
             var normalized = rawMountTarget.Trim().ToLowerInvariant().Replace("-", "_").Replace(" ", "_");
             return normalized switch
             {
-                "proxy_end_effector" or "proxyendeffector" => "proxy_end_effector",
-                "proxy_camera_mount" or "proxycameramount" or "gripper" or "gripper_mount" or "wrist" => "proxy_camera_mount",
+                "proxy_end_effector" or "proxyendeffector" or "robot_end_effector" or "robotendeffector" or "end_effector" or "endeffector" => "robot_end_effector",
+                "proxy_camera_mount" or "proxycameramount" or "robot_camera_mount" or "robotcameramount" or "gripper" or "gripper_mount" or "wrist" or "wrist_mount" => "robot_camera_mount",
                 _ => throw new System.ArgumentException($"Unsupported camera mount target '{rawMountTarget}'."),
             };
         }
@@ -48,11 +48,11 @@ namespace VlaStudy.UnityHarness.Camera
             {
                 case "":
                     return false;
-                case "proxy_end_effector":
-                    mountTarget = _sceneReferences.ProxyEndEffector;
+                case "robot_end_effector":
+                    mountTarget = _sceneReferences.RobotEndEffector;
                     return mountTarget != null;
-                case "proxy_camera_mount":
-                    mountTarget = _sceneReferences.ProxyCameraMount;
+                case "robot_camera_mount":
+                    mountTarget = _sceneReferences.RobotCameraMount;
                     return mountTarget != null;
                 default:
                     return false;

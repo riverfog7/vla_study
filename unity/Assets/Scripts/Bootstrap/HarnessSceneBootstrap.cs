@@ -17,6 +17,7 @@ namespace VlaStudy.UnityHarness.Bootstrap
         [SerializeField] private CameraMountService cameraMountService;
         [SerializeField] private RuntimeCameraService runtimeCameraService;
         [SerializeField] private ProxyPoseAdapter proxyPoseAdapter;
+        [SerializeField] private ArticulatedRobotAdapter articulatedRobotAdapter;
         [SerializeField] private SceneStateService sceneStateService;
         [SerializeField] private TaskResetService taskResetService;
         [SerializeField] private HttpApiServer httpApiServer;
@@ -52,15 +53,39 @@ namespace VlaStudy.UnityHarness.Bootstrap
             cameraMountService.Configure(sceneReferences);
             cameraCaptureService.Configure(cameraRegistry);
             runtimeCameraService.Configure(cameraRegistry, cameraMountService);
-            proxyPoseAdapter.Configure(
-                sceneReferences.ProxyEndEffector,
-                sceneReferences.ProxyEndEffector.position,
-                sceneReferences.ProxyEndEffector.rotation);
-            simulationController.Configure(proxyPoseAdapter);
+
+            if (articulatedRobotAdapter != null && sceneReferences.RobotBaseFrame != null)
+            {
+                articulatedRobotAdapter.Configure(
+                    sceneReferences.RobotBaseFrame,
+                    sceneReferences.RobotEndEffector,
+                    sceneReferences.RobotCameraMount);
+            }
+
+            if ((articulatedRobotAdapter == null || !articulatedRobotAdapter.IsConfiguredForControl) &&
+                proxyPoseAdapter != null &&
+                sceneReferences.RobotEndEffector != null)
+            {
+                proxyPoseAdapter.Configure(
+                    sceneReferences.RobotEndEffector,
+                    sceneReferences.RobotEndEffector.position,
+                    sceneReferences.RobotEndEffector.rotation);
+            }
+
+            var robotAdapter = ResolveRobotAdapter();
+            if (robotAdapter == null)
+            {
+                Debug.LogError("HarnessSceneBootstrap could not resolve an active robot adapter.", this);
+                httpApiServer.enabled = false;
+                enabled = false;
+                return;
+            }
+
+            simulationController.Configure(robotAdapter);
+            sceneStateService.Configure(simulationController, robotAdapter);
+            taskResetService.Configure(simulationController, robotAdapter, sceneReferences.TargetObject);
+            httpApiServer.Configure(mainThreadDispatcher, simulationController, sceneStateService, cameraCaptureService, cameraRegistry, runtimeCameraService, robotAdapter, taskResetService);
             RegisterAuthoredCameras();
-            sceneStateService.Configure(simulationController, proxyPoseAdapter);
-            taskResetService.Configure(simulationController, proxyPoseAdapter, sceneReferences.TargetObject);
-            httpApiServer.Configure(mainThreadDispatcher, simulationController, sceneStateService, cameraCaptureService, cameraRegistry, runtimeCameraService, proxyPoseAdapter, taskResetService);
 
             _isConfigured = true;
         }
@@ -85,6 +110,7 @@ namespace VlaStudy.UnityHarness.Bootstrap
             cameraMountService ??= GetComponent<CameraMountService>();
             runtimeCameraService ??= GetComponent<RuntimeCameraService>();
             proxyPoseAdapter ??= GetComponent<ProxyPoseAdapter>();
+            articulatedRobotAdapter ??= GetComponent<ArticulatedRobotAdapter>();
             sceneStateService ??= GetComponent<SceneStateService>();
             taskResetService ??= GetComponent<TaskResetService>();
             httpApiServer ??= GetComponent<HttpApiServer>();
@@ -106,10 +132,21 @@ namespace VlaStudy.UnityHarness.Bootstrap
             isValid &= ValidateComponent(cameraCaptureService, nameof(cameraCaptureService));
             isValid &= ValidateComponent(cameraMountService, nameof(cameraMountService));
             isValid &= ValidateComponent(runtimeCameraService, nameof(runtimeCameraService));
-            isValid &= ValidateComponent(proxyPoseAdapter, nameof(proxyPoseAdapter));
             isValid &= ValidateComponent(sceneStateService, nameof(sceneStateService));
             isValid &= ValidateComponent(taskResetService, nameof(taskResetService));
             isValid &= ValidateComponent(httpApiServer, nameof(httpApiServer));
+
+            if (proxyPoseAdapter == null && articulatedRobotAdapter == null)
+            {
+                Debug.LogError("HarnessSceneBootstrap requires either ProxyPoseAdapter or ArticulatedRobotAdapter.", this);
+                isValid = false;
+            }
+
+            if (articulatedRobotAdapter != null && proxyPoseAdapter == null && sceneReferences != null && sceneReferences.RobotBaseFrame == null)
+            {
+                Debug.LogError("HarnessSceneBootstrap requires HarnessSceneReferences.robotBaseFrame when only ArticulatedRobotAdapter is present.", this);
+                isValid = false;
+            }
 
             if (sceneReferences != null && !sceneReferences.HasCameraNamed("main"))
             {
@@ -118,6 +155,16 @@ namespace VlaStudy.UnityHarness.Bootstrap
             }
 
             return isValid;
+        }
+
+        private IRobotAdapter ResolveRobotAdapter()
+        {
+            if (articulatedRobotAdapter != null && articulatedRobotAdapter.IsConfiguredForControl)
+            {
+                return articulatedRobotAdapter;
+            }
+
+            return proxyPoseAdapter;
         }
 
         private void RegisterAuthoredCameras()
@@ -140,6 +187,7 @@ namespace VlaStudy.UnityHarness.Bootstrap
                     TemplateCameraName = cameraDefinition.cameraName,
                 };
                 cameraRegistry.RegisterAuthored(descriptor);
+                cameraMountService.ApplyAuthoredCameraMount(descriptor);
             }
         }
 

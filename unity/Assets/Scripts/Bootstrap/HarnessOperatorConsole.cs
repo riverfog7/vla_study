@@ -12,6 +12,7 @@ namespace VlaStudy.UnityHarness.Bootstrap
         [SerializeField] private SceneStateService sceneStateService;
         [SerializeField] private TaskResetService taskResetService;
         [SerializeField] private ProxyPoseAdapter proxyPoseAdapter;
+        [SerializeField] private ArticulatedRobotAdapter articulatedRobotAdapter;
         [SerializeField] private ControlTimingConfig controlTimingConfig;
         [SerializeField] private Vector3 testPosePosition = new Vector3(0.25f, 1f, 0.2f);
         [SerializeField] private Vector3 testPoseEulerDegrees = Vector3.zero;
@@ -93,13 +94,14 @@ namespace VlaStudy.UnityHarness.Bootstrap
         {
             AutoAssignReferences();
 
-            if (proxyPoseAdapter == null)
+            var robotAdapter = ResolveRobotAdapter();
+            if (robotAdapter == null)
             {
-                Debug.LogError("HarnessOperatorConsole is missing ProxyPoseAdapter.", this);
+                Debug.LogError("HarnessOperatorConsole could not resolve an active robot adapter.", this);
                 return;
             }
 
-            var commandId = proxyPoseAdapter.ApplyPoseCommand(new PoseCommand
+            var commandId = robotAdapter.ApplyPoseCommand(new PoseCommand
             {
                 frame = "world",
                 position = new Vector3Data(testPosePosition),
@@ -117,7 +119,18 @@ namespace VlaStudy.UnityHarness.Bootstrap
             sceneStateService ??= GetComponent<SceneStateService>();
             taskResetService ??= GetComponent<TaskResetService>();
             proxyPoseAdapter ??= GetComponent<ProxyPoseAdapter>();
+            articulatedRobotAdapter ??= GetComponent<ArticulatedRobotAdapter>();
             controlTimingConfig ??= GetComponent<ControlTimingConfig>();
+        }
+
+        private IRobotAdapter ResolveRobotAdapter()
+        {
+            if (articulatedRobotAdapter != null && articulatedRobotAdapter.isActiveAndEnabled && articulatedRobotAdapter.IsConfiguredForControl)
+            {
+                return articulatedRobotAdapter;
+            }
+
+            return proxyPoseAdapter;
         }
     }
 }

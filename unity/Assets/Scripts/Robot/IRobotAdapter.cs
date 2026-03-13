@@ -11,6 +11,7 @@ namespace VlaStudy.UnityHarness.Robot
         int ApplyPoseCommand(PoseCommand command);
         void AdvanceMotion(float dt);
         void ResetRobot();
+        void ClearTransientState();
     }
 
     public struct RobotSnapshot

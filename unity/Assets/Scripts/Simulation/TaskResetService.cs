@@ -39,11 +39,7 @@ namespace VlaStudy.UnityHarness.Simulation
             }
 
             RestoreRigidbodies();
-
-            if (_robotAdapter is ProxyPoseAdapter proxyPoseAdapter)
-            {
-                proxyPoseAdapter.ClearTransientState();
-            }
+            _robotAdapter?.ClearTransientState();
         }
 
         private void CaptureInitialRigidbodyState()
