@@ -615,7 +615,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f0595741dd6f74c398b0b76568cf8db0, type: 3}
-  m_Name: ""
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VlaStudy.UnityHarness.Bootstrap.HarnessSceneReferences
   workspaceTable: {fileID: 1346882154}
   targetObject: {fileID: 64702997}
@@ -625,7 +625,7 @@ MonoBehaviour:
   - cameraName: main
     camera: {fileID: 963194227}
     enabled: 1
-    mountTarget: ""
+    mountTarget: 
     localPositionOffset: {x: 0, y: 0, z: 0}
     localRotationEuler: {x: 0, y: 0, z: 0}
 --- !u!4 &547963042
@@ -653,7 +653,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b7998a68eef154a6f940c04266d72bd7, type: 3}
-  m_Name: ""
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VlaStudy.UnityHarness.Bootstrap.HarnessOperatorConsole
   simulationController: {fileID: 547963051}
   sceneStateService: {fileID: 547963047}
@@ -673,7 +673,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7c180a084751d4119a5f0e1feeaa40b0, type: 3}
-  m_Name: ""
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VlaStudy.UnityHarness.Bootstrap.HarnessSceneBootstrap
   sceneReferences: {fileID: 547963041}
   mainThreadDispatcher: {fileID: 547963052}
@@ -696,7 +696,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d5c06e9e64bfa488380392197bfa6610, type: 3}
-  m_Name: ""
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VlaStudy.UnityHarness.Api.HttpApiServer
   host: 127.0.0.1
   port: 8080
@@ -712,7 +712,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8aed4cf9724c740c59e4e8d182fb3831, type: 3}
-  m_Name: ""
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VlaStudy.UnityHarness.Simulation.TaskResetService
 --- !u!114 &547963047
 MonoBehaviour:
@@ -724,7 +724,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 381d7c3fda62141a58802746477ce10e, type: 3}
-  m_Name: ""
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VlaStudy.UnityHarness.Simulation.SceneStateService
 --- !u!114 &547963048
 MonoBehaviour:
@@ -736,11 +736,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 61a60f341a30e41a2be5a2fca433ab05, type: 3}
-  m_Name: ""
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VlaStudy.UnityHarness.Robot.ProxyPoseAdapter
   minPosition: {x: -0.75, y: 0.55, z: -0.75}
   maxPosition: {x: 0.75, y: 1.3, z: 0.75}
-  maxLinearSpeedMetersPerSecond: 0.25
+  maxLinearSpeedMetersPerSecond: 1
   maxAngularSpeedDegreesPerSecond: 180
   maxGripperSpeedPerSecond: 2
   positionToleranceMeters: 0.001
@@ -756,7 +756,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5d62ae11ecb3a4253a231c8a0cb897bc, type: 3}
-  m_Name: ""
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VlaStudy.UnityHarness.Camera.CameraCaptureService
 --- !u!114 &547963050
 MonoBehaviour:
@@ -768,7 +768,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dbd64270ca426435e979b26d807e47af, type: 3}
-  m_Name: ""
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VlaStudy.UnityHarness.Camera.CameraRegistry
 --- !u!114 &547963051
 MonoBehaviour:
@@ -780,7 +780,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6af7faccea9cc474bb1e17294182eb7c, type: 3}
-  m_Name: ""
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VlaStudy.UnityHarness.Simulation.SimulationController
   fallbackPhysicsDt: 0.02
   controlTimingConfig: {fileID: 547963053}
@@ -794,7 +794,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4589f8e6f4c60455dbcee4c32ea76e92, type: 3}
-  m_Name: ""
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VlaStudy.UnityHarness.Api.MainThreadDispatcher
 --- !u!114 &547963053
 MonoBehaviour:
@@ -806,7 +806,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c3a8e0a7353d4478ab008a998afcb454, type: 3}
-  m_Name: ""
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VlaStudy.UnityHarness.Simulation.ControlTimingConfig
   physicsDt: 0.02
   policyPeriodSeconds: 0.2
@@ -821,7 +821,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ff0d394dd439fdf4c88406ed21de281f, type: 3}
-  m_Name: ""
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VlaStudy.UnityHarness.Camera.RuntimeCameraService
 --- !u!114 &547963055
 MonoBehaviour:
@@ -833,7 +833,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 915d20330788ff0468ea510ca0b72a4d, type: 3}
-  m_Name: ""
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VlaStudy.UnityHarness.Camera.CameraMountService
 --- !u!1 &585913565
 GameObject:
@@ -1466,13 +1466,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.0009593369, y: 0.8780599, z: -0.47854656, w: -0.0017558935}
-  m_LocalPosition: {x: 0.054167464, y: 2.6114204, z: 1.4318569}
+  m_LocalRotation: {x: 0.19089171, y: -0.16343646, z: 0.03225095, w: 0.96737206}
+  m_LocalPosition: {x: 0.5, y: 1.25, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 80.157, y: -99.686, z: 78.837}
+  m_LocalEulerAnglesHint: {x: 22.326, y: -19.179, z: 0}
 --- !u!1 &1346882150
 GameObject:
   m_ObjectHideFlags: 0
@@ -1946,7 +1946,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b3141e27ab7117842b6b79c4a7ea90f2, type: 3}
-  m_Name: ""
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VlaStudy.UnityHarness.Robot.ProxyGripperVisualController
   leftJaw: {fileID: 0}
   rightJaw: {fileID: 0}
