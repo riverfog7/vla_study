@@ -98,7 +98,7 @@ class OctoRestBackendConfig(BaseSettings):
     dataset_statistics_key: str | None = None
     history_horizon: int = Field(default=2, ge=1)
     use_temporal_ensembling: bool = True
-    temporal_ensemble_exp_weight: float = Field(default=0.0, ge=0.0)
+    temporal_ensemble_exp_weight: float = Field(default=1.0, ge=0.0)
     image_quality: int = Field(default=85, ge=1, le=100)
     image_format: str = "JPEG"
 
@@ -179,6 +179,7 @@ class OctoRestBackend(PolicyBackend):
             raw_rotation_delta = Vector3(x=action[3], y=action[4], z=action[5])
 
         gripper = action[6] if len(action) >= 7 else action[-1]
+        gripper = max(0.0, min(1.0, float(gripper)))
 
         return StandardizedDeltaAction(
             delta_position=Vector3(x=action[0], y=action[1], z=action[2]),
@@ -241,7 +242,7 @@ class OctoRestBackend(PolicyBackend):
         current_step_predictions = [
             action_chunk[predicted_index]
             for predicted_index, action_chunk in zip(
-                range(num_chunks - 1, -1, -1), self._action_chunk_history
+                range(num_chunks), reversed(self._action_chunk_history)
             )
             if predicted_index < len(action_chunk)
         ]

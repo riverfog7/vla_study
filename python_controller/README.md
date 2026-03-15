@@ -152,7 +152,7 @@ Current Octo behavior:
 - language instructions are used
 - the backend keeps a short image history (default horizon `2`) and sends `timestep_pad_mask` to the Octo runtime
 - Octo returns the full predicted action chunk
-- temporal ensembling is applied inside the Octo backend before selecting a single action to execute
+- temporal ensembling is applied inside the Octo backend before selecting a single action to execute; larger positive `temporal_ensemble_exp_weight` values bias the newest/current prediction more strongly
 - only one action is executed per control step
 - `xyz` translation is applied
 - gripper is applied
