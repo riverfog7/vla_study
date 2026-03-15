@@ -21,12 +21,22 @@ dependencies = [
     "fastapi>=0.110,<1.0",
     "flax==0.7.5",
     "jax==0.4.20",
+    "jaxlib==0.4.20+cuda11.cudnn86",
     "ml_dtypes==0.2.0",
+    "nvidia-cublas-cu11>=11.11",
+    "nvidia-cuda-cupti-cu11>=11.8",
+    "nvidia-cuda-nvcc-cu11>=11.8",
+    "nvidia-cuda-runtime-cu11>=11.8",
+    "nvidia-cudnn-cu11>=8.8",
+    "nvidia-cufft-cu11>=10.9",
+    "nvidia-cusolver-cu11>=11.4",
+    "nvidia-cusparse-cu11>=11.7",
+    "nvidia-nccl-cu11>=2.18.3",
     "numpy==1.24.3",
     "pillow>=10.0,<11.0",
     "pydantic>=2.7,<3.0",
     "pydantic-settings>=2.2,<3.0",
-    "tensorflow==2.15.0",
+    "tensorflow-cpu==2.15.0",
     "tensorflow_probability==0.23.0",
     "transformers>=4.34.1",
     "uvicorn[standard]>=0.29,<1.0",
@@ -39,3 +49,6 @@ octo-runtime-server = "octo_runtime.server:main"
 required-environments = [
     "sys_platform == 'linux' and platform_machine == 'x86_64'",
 ]
+
+[tool.uv.sources]
+jaxlib = { url = "https://storage.googleapis.com/jax-releases/cuda11/jaxlib-0.4.20+cuda11.cudnn86-cp310-cp310-manylinux2014_x86_64.whl" }

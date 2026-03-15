@@ -17,6 +17,8 @@ Notes:
 
 - This runtime is intended to run on a separate remote Linux GPU machine.
 - The local Unity/controller machine should talk to it over HTTP.
+- JAX GPU support is explicit in `pyproject.toml` via `jax==0.4.20`, the exact CUDA 11 `jaxlib` wheel, and the matching CUDA 11 runtime packages.
+- TensorFlow is intentionally CPU-only via `tensorflow-cpu==2.15.0`; Octo inference uses JAX/Flax, while TensorFlow is retained for checkpoint and utility code.
 - The runtime accepts a short history of RGB frames plus a `timestep_pad_mask`.
 - The controller currently uses language instructions, a history horizon of `2`, and temporal ensembling over Octo's returned action chunks.
 - Rotation deltas are returned to the controller but remain ignored by the Unity adapter, matching the current OpenVLA behavior.
