@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["octo_runtime*"]
+
+[project]
+name = "octo-runtime"
+version = "0.1.0"
+description = "Pinned Octo inference runtime for the VLA study project."
+readme = "README.md"
+requires-python = ">=3.10,<3.11"
+dependencies = [
+    "absl-py>=0.12.0",
+    "chex==0.1.85",
+    "distrax==0.1.5",
+    "einops>=0.6.1",
+    "fastapi>=0.110,<1.0",
+    "flax==0.7.5",
+    "gym>=0.26",
+    "jax==0.4.20",
+    "ml_collections>=0.1.0",
+    "ml_dtypes==0.2.0",
+    "numpy==1.24.3",
+    "octo @ git+https://github.com/octo-models/octo@v1.5",
+    "pillow>=10.0,<11.0",
+    "pydantic>=2.7,<3.0",
+    "pydantic-settings>=2.2,<3.0",
+    "scipy>=1.6.0",
+    "tensorflow==2.15.0",
+    "tensorflow_datasets==4.9.2",
+    "tensorflow_hub>=0.14.0",
+    "tensorflow_probability==0.23.0",
+    "tensorflow_text>=2.13.0",
+    "transformers>=4.34.1",
+    "uvicorn[standard]>=0.29,<1.0",
+]
+
+[project.scripts]
+octo-runtime-server = "octo_runtime.server:main"
+
+[tool.uv]
+required-environments = [
+    "sys_platform == 'linux' and platform_machine == 'x86_64'",
+]

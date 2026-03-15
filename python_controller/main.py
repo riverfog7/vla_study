@@ -6,6 +6,15 @@ from pathlib import Path
 
 from vla_control import (
     ActionAdapter,
+    DEFAULT_OCTO_ARTIFACT_ROOT,
+    DEFAULT_OCTO_CAMERA_NAME,
+    DEFAULT_OCTO_DATASET_STATISTICS_KEY,
+    DEFAULT_OCTO_IMAGE_HEIGHT,
+    DEFAULT_OCTO_IMAGE_QUALITY,
+    DEFAULT_OCTO_IMAGE_WIDTH,
+    DEFAULT_OCTO_INSTRUCTION,
+    DEFAULT_OCTO_ROLLOUT_STEPS,
+    DEFAULT_OCTO_TIMEOUT_SECONDS,
     DEFAULT_OPENVLA_ARTIFACT_ROOT,
     DEFAULT_OPENVLA_CAMERA_NAME,
     DEFAULT_OPENVLA_IMAGE_HEIGHT,
@@ -20,7 +29,10 @@ from vla_control import (
     RolloutConfig,
     UnityClient,
     UnityConfig,
+    create_octo_backend,
     create_openvla_backend,
+    run_octo_rollout,
+    run_octo_single_step_check,
     run_openvla_rollout,
     run_openvla_single_step_check,
     run_smoke_test,
@@ -31,7 +43,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="VLA control utilities")
     parser.add_argument(
         "command",
-        choices=["smoke", "dummy-rollout", "openvla-check", "openvla-rollout"],
+        choices=[
+            "smoke",
+            "dummy-rollout",
+            "openvla-check",
+            "openvla-rollout",
+            "octo-check",
+            "octo-rollout",
+        ],
         help="Command to run",
     )
     parser.add_argument("--host", help="Unity server host")
@@ -46,6 +65,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--max-steps", type=int, help="Maximum rollout steps")
     parser.add_argument("--openvla-url", help="OpenVLA runtime base URL")
     parser.add_argument("--unnorm-key", help="OpenVLA normalization key")
+    parser.add_argument("--octo-url", help="Octo runtime base URL")
+    parser.add_argument("--dataset-statistics-key", help="Octo dataset statistics key")
     parser.add_argument("--camera", help="Camera name to use for rollouts")
     parser.add_argument("--image-width", type=int, help="Requested camera image width")
     parser.add_argument(
@@ -136,6 +157,53 @@ def main() -> None:
             reset_after_rollout=True,
         )
         summary = run_openvla_rollout(
+            client,
+            backend,
+            rollout_config=rollout_config,
+            action_adapter=ActionAdapter(),
+        )
+        print(json.dumps(summary.model_dump(mode="json"), indent=2))
+        return
+
+    if args.command == "octo-check":
+        backend = create_octo_backend(
+            base_url=args.octo_url,
+            dataset_statistics_key=args.dataset_statistics_key
+            or DEFAULT_OCTO_DATASET_STATISTICS_KEY,
+            timeout_seconds=args.timeout or DEFAULT_OCTO_TIMEOUT_SECONDS,
+        )
+        result = run_octo_single_step_check(
+            client,
+            backend,
+            instruction=args.instruction or DEFAULT_OCTO_INSTRUCTION,
+            camera_name=args.camera or DEFAULT_OCTO_CAMERA_NAME,
+            image_width=args.image_width or DEFAULT_OCTO_IMAGE_WIDTH,
+            image_height=args.image_height or DEFAULT_OCTO_IMAGE_HEIGHT,
+            image_quality=args.image_quality or DEFAULT_OCTO_IMAGE_QUALITY,
+            action_adapter=ActionAdapter(),
+        )
+        print(json.dumps(result.model_dump(mode="json"), indent=2))
+        return
+
+    if args.command == "octo-rollout":
+        backend = create_octo_backend(
+            base_url=args.octo_url,
+            dataset_statistics_key=args.dataset_statistics_key
+            or DEFAULT_OCTO_DATASET_STATISTICS_KEY,
+            timeout_seconds=args.timeout or DEFAULT_OCTO_TIMEOUT_SECONDS,
+        )
+        rollout_config = RolloutConfig(
+            instruction=args.instruction or DEFAULT_OCTO_INSTRUCTION,
+            max_steps=args.max_steps or DEFAULT_OCTO_ROLLOUT_STEPS,
+            camera_name=args.camera or DEFAULT_OCTO_CAMERA_NAME,
+            image_width=args.image_width or DEFAULT_OCTO_IMAGE_WIDTH,
+            image_height=args.image_height or DEFAULT_OCTO_IMAGE_HEIGHT,
+            image_quality=args.image_quality or DEFAULT_OCTO_IMAGE_QUALITY,
+            artifact_root=args.save_dir or DEFAULT_OCTO_ARTIFACT_ROOT,
+            reset_before_rollout=True,
+            reset_after_rollout=True,
+        )
+        summary = run_octo_rollout(
             client,
             backend,
             rollout_config=rollout_config,

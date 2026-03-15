@@ -112,6 +112,52 @@ Current OpenVLA behavior:
 - gripper is applied
 - rotation deltas are logged but not yet sent to Unity
 
+## Octo workflow
+
+Single-step sanity check against a hosted Octo runtime:
+
+```python
+from vla_control import UnityClient, create_octo_backend, run_octo_single_step_check
+
+client = UnityClient()
+backend = create_octo_backend(
+    base_url="http://your-octo-host:8001",
+    dataset_statistics_key="bridge_dataset",
+    timeout_seconds=300.0,
+)
+
+result = run_octo_single_step_check(client, backend)
+result.pose_command
+```
+
+Short rollout with the current xyz-only Octo adapter path:
+
+```python
+from vla_control import UnityClient, create_octo_backend, run_octo_rollout
+
+client = UnityClient()
+backend = create_octo_backend(
+    base_url="http://your-octo-host:8001",
+    dataset_statistics_key="bridge_dataset",
+    timeout_seconds=300.0,
+)
+
+summary = run_octo_rollout(client, backend)
+summary.status, summary.total_steps
+```
+
+Current Octo behavior:
+
+- one RGB camera input (`main`) is used
+- language instructions are used
+- the backend keeps a short image history (default horizon `2`) and sends `timestep_pad_mask` to the Octo runtime
+- Octo returns the full predicted action chunk
+- temporal ensembling is applied inside the Octo backend before selecting a single action to execute
+- only one action is executed per control step
+- `xyz` translation is applied
+- gripper is applied
+- rotation deltas are logged but not yet sent to Unity
+
 ## CLI smoke test
 
 ```bash
@@ -128,6 +174,14 @@ uv run python main.py openvla-check --openvla-url http://your-openvla-host:8000 
 
 ```bash
 uv run python main.py openvla-rollout --openvla-url http://your-openvla-host:8000 --unnorm-key bridge_orig --max-steps 3 --save-dir artifacts/openvla_first_rollout
+```
+
+```bash
+uv run python main.py octo-check --octo-url http://your-octo-host:8001 --dataset-statistics-key bridge_dataset
+```
+
+```bash
+uv run python main.py octo-rollout --octo-url http://your-octo-host:8001 --dataset-statistics-key bridge_dataset --max-steps 3 --save-dir artifacts/octo_first_rollout
 ```
 
 This runs:
