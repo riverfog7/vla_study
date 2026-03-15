@@ -40,6 +40,8 @@ dependencies = [
     "tensorflow_probability==0.23.0",
     "transformers>=4.34.1",
     "uvicorn[standard]>=0.29,<1.0",
+    "dlimp",
+    "scipy>=1.6.0,<=1.12.0",
 ]
 
 [project.scripts]
@@ -52,3 +54,4 @@ required-environments = [
 
 [tool.uv.sources]
 jaxlib = { url = "https://storage.googleapis.com/jax-releases/cuda11/jaxlib-0.4.20+cuda11.cudnn86-cp310-cp310-manylinux2014_x86_64.whl" }
+dlimp = { git = "https://github.com/kvablack/dlimp" }
