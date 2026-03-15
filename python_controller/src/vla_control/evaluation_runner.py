@@ -21,9 +21,9 @@ class RolloutConfig(BaseSettings):
     instruction: str = Field(default="move the proxy toward the dummy goal", min_length=1)
     max_steps: int = Field(default=10, ge=1)
     camera_name: str = Field(default="main", min_length=1)
-    image_width: int = Field(default=256, ge=1)
-    image_height: int = Field(default=256, ge=1)
-    image_quality: int = Field(default=80, ge=1, le=100)
+    image_width: int = Field(default=512, ge=1)
+    image_height: int = Field(default=512, ge=1)
+    image_quality: int = Field(default=90, ge=1, le=100)
     artifact_root: Path | None = None
     run_name: str | None = None
     save_images: bool = True
