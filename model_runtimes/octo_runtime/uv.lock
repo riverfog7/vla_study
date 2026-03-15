@@ -722,11 +722,6 @@ wheels = [
 ]
 
 [[package]]
-name = "octo"
-version = "0.0.0"
-source = { git = "https://github.com/octo-models/octo?rev=v1.5#5eaa5c6960398925ae6f52ed072d843d2f3ecb0b" }
-
-[[package]]
 name = "octo-runtime"
 version = "0.1.0"
 source = { editable = "." }
@@ -738,7 +733,6 @@ dependencies = [
     { name = "jax" },
     { name = "ml-dtypes" },
     { name = "numpy" },
-    { name = "octo" },
     { name = "pillow" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
@@ -757,7 +751,6 @@ requires-dist = [
     { name = "jax", specifier = "==0.4.20" },
     { name = "ml-dtypes", specifier = "==0.2.0" },
     { name = "numpy", specifier = "==1.24.3" },
-    { name = "octo", git = "https://github.com/octo-models/octo?rev=v1.5" },
     { name = "pillow", specifier = ">=10.0,<11.0" },
     { name = "pydantic", specifier = ">=2.7,<3.0" },
     { name = "pydantic-settings", specifier = ">=2.2,<3.0" },

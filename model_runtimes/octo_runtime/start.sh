@@ -2,6 +2,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 export PATH="$HOME/.local/bin:$PATH"
+export PYTHONPATH="$(pwd)/vendor/octo${PYTHONPATH:+:$PYTHONPATH}"
 export OCTO_RUNTIME_HOST="${OCTO_RUNTIME_HOST:-0.0.0.0}"
 export OCTO_RUNTIME_PORT="${OCTO_RUNTIME_PORT:-8001}"
 export OCTO_RUNTIME_MODEL_PATH="${OCTO_RUNTIME_MODEL_PATH:-hf://rail-berkeley/octo-small-1.5}"

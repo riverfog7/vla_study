@@ -16,8 +16,6 @@ description = "Pinned Octo inference runtime for the VLA study project."
 readme = "README.md"
 requires-python = ">=3.10,<3.11"
 dependencies = [
-    "octo @ git+https://github.com/octo-models/octo@v1.5",
-
     "distrax==0.1.5",
     "einops>=0.6.1",
     "fastapi>=0.110,<1.0",

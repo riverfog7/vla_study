@@ -2,12 +2,16 @@
 
 Minimal remote inference runtime for Octo.
 
+This runtime vendors the upstream Octo source as a git submodule at `vendor/octo` and imports it via `PYTHONPATH`. This avoids the broken upstream `v1.5` package metadata, which does not install the `octo.model` subpackages correctly.
+
 Recommended remote workflow on the GPU host:
 
 ```bash
 ./configure.sh
 ./start.sh
 ```
+
+If the repo was not cloned with submodules, `configure.sh` will initialize `model_runtimes/octo_runtime/vendor/octo` automatically.
 
 Notes:
 
@@ -47,3 +51,9 @@ Endpoints:
 - `dataset_statistics_key`
 - `request_id`
 - `step_index`
+
+Quick import check on the server:
+
+```bash
+uv run --no-sync python -c "from octo.model.octo_model import OctoModel; print('ok')"
+```
