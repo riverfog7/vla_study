@@ -103,5 +103,9 @@ def main() -> None:
 
     config = OctoRuntimeConfig()
     uvicorn.run(
-        create_app(), host=config.host, port=config.port, log_level=config.log_level
+        create_app(),
+        host=config.host,
+        port=config.port,
+        log_level=config.log_level,
+        loop="asyncio",
     )
